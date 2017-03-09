@@ -1,7 +1,17 @@
 import Vue from 'vue'
-import App from './App.vue'
+import Store from './store'
+import Main from './components/Main.vue'
+import VueRouter from 'vue-router'
+import {routes} from './routes'
+
+Vue.use(VueRouter);
 
 new Vue({
   el: '#app',
-  render: h => h(App)
+  Store,
+  router: new VueRouter({
+    mode: 'history',
+    routes
+  }),
+  render: h => h(Main)
 })
