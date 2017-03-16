@@ -1,0 +1,46 @@
+{
+  "validation": {
+    "login": "Artyr",
+    "password": "hello"
+  },
+  "testing": [
+      {"question": "What is this site name?",
+        "answers": [
+          {"answer": "Google Maps",
+           "correct": false},
+          {"answer": "Yandex Disk",
+           "correct": false},
+          {"answer": "Student Tester",
+           "correct": true},
+          {"answer": "Vkontakte",
+           "correct": false}
+        ]
+      },
+      {"question": "What is author name",
+        "answers": [
+          {"answer": "Leha",
+           "correct": false},
+          {"answer": "Artyr",
+           "correct": true},
+          {"answer": "Sanya",
+           "correct": false},
+          {"answer": "Dasha",
+           "correct": false}
+        ]
+      },
+      {"question": "What is your academy name?",
+        "answers": [
+          {"answer": "Gorka",
+           "correct": false},
+          {"answer": "Gonchara",
+           "correct": false},
+          {"answer": "HimHlam",
+           "correct": false},
+          {"answer": "Metal",
+           "correct": true}
+        ]
+      }
+  ],
+  "results": "none",
+  "evaluation": "standart"
+}

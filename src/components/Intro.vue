@@ -74,7 +74,6 @@
   @import "../style/sass/colors.scss";
 
   .intro-content {
-    margin-top: 25px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-around;

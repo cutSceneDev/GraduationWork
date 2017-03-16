@@ -17,29 +17,30 @@
         <router-view></router-view>
       </div>
     </div>
-    <div class="popup-intro__back" v-if="popupAbout || popupAdmin" @click="popupHide()">
+    <div class="popup__back" v-if="popupAbout || popupAdmin" @click="popupHide()">
     </div>
-    <div class="popup popup-intro__about about" v-if="popupAbout">
+    <div class="popup__about" v-if="popupAbout">
       <h2 class="about__title">О проекте</h2>
       <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на <a class="git-href" href="https://github.com/cutSceneDev/GraduationWork">github.com/cutSceneDev/GraduationWork</a></p>
     </div>
-    <div class="popup popup-intro__admin admin" v-if="popupAdmin">
+    <div class="popup__admin" v-if="popupAdmin">
       <h2 class="admin__title">Вход в панель Администратора</h2>
       <form class="admin-form" action="" method="get">
         <div class="admin-form__wrap">
           <label class="admin-form__login-label" for="login">Введите Логин:</label>
-          <input class="admin-form__login-input" id="login" name="login" v-model="login" placeholder="Логин">
+          <input class="admin-form__login-input" id="login" name="login" v-model="login" placeholder="Логин" autofocus maxlength="16">
           <label class="admin-form__pass-label" for="pass">Введите Пароль:</label>
-          <input class="admin-form__pass-input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль">
-          <p class="wrong" v-show="wrongDisplay" :style="{color: wrongColor}">{{wrong}}</p>
+          <input class="admin-form__pass-input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль" maxlength="16">
+          <p class="wrong" :style="{visibility: wrongDisplay}">Wrong login or password, try again!</p>
+          <input @click="submitValidation()" class="admin-form__submit" type="button" value="Войти">
         </div>
-        <input @click="submitValidation()" class="admin-form__submit" type="button" value="Войти">
       </form>
     </div>
   </div>
 </template>
 
 <script>
+let Data = require('../data.json');
 module.exports = {
   data: function() {
     return {
@@ -47,11 +48,9 @@ module.exports = {
       storePassword: 'hello',
       popupAbout: false,
       popupAdmin: false,
-      wrongDisplay: false,
-      login: '',
-      password: '',
-      wrong: 'Wrong Login or Password. Try again!',
-      wrongColor: 'red'
+      wrongDisplay: "hidden",
+      login: Data.validation.login,
+      password: Data.validation.password,
     }
   },
   methods: {
@@ -68,13 +67,12 @@ module.exports = {
       };
     },
     submitValidation: function(event) {
-      if (this.login === this.storeLogin) {
-        if (this.password === this.storePassword) {
-          return;
-        }
+      if (this.login === this.storeLogin && this.password === this.storePassword) {
+        alert('enter');
+      } else {
+        this.wrongDisplay = "visible";
+        window.event.preventDefault();
       }
-      this.wrongDisplay = true;
-      window.event.preventDefault();
     }
   }
 }
@@ -105,6 +103,7 @@ module.exports = {
     display: flex;
     justify-content: center;
     align-content: flex-start;
+    margin-bottom: 25px;
   }
   .main-nav__container {
     display: flex;
@@ -147,24 +146,24 @@ module.exports = {
   .router-content__wrap {
     width: 960px;
   }
-  .popup {
+  .popup__center-wrap {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .popup__about,
+  .popup__admin {
     position: absolute;
     top: 120px;
     left: 50%;
     right: 50%;
-    width: 350px;
-    margin-left: -175px;
+    margin-left: -190px;
     z-index: 10;
-
-    //миксин
+    width: 380px;
     border: 2px solid $grey;
     background-color: black;
     color: $grey;
     border-radius: 15px;
     box-shadow: 3px 3px 15px black;
-  }
-  .admin {
-    width: 250px;
   }
   .about__title,
   .admin__title {
@@ -175,7 +174,7 @@ module.exports = {
   .about__info {
     padding: 0 15px;
   }
-  .popup-intro__back {
+  .popup__back {
     top: 0;
     left: 0;
     position: fixed;
@@ -192,19 +191,12 @@ module.exports = {
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
-    align-items: flex-start;
-  }
-  .admin-form__login-label,
-  .admin-form__pass-label,
-  .admin-form__login-input,
-  .admin-form__pass-input,
-  .admin-form__submit {
-    margin-left: 15px;
+    align-items: center;
   }
   .admin-form__login-input,
   .admin-form__pass-input {
-    padding: 5px 5px;
-    margin-bottom: 25px;
+    width: 250px;
+    padding: 5px 10px;
   }
   .admin-form__login-input {
     margin-bottom: 15px;
@@ -214,7 +206,7 @@ module.exports = {
     background-color: #666;
     border: 2px solid #999;
     border-radius: 5px;
-    padding: 5px 15px;
+    padding: 5px 35px;
     font-size: 16px;
     color: $grey;
     text-decoration: none;
@@ -230,15 +222,8 @@ module.exports = {
   }
   .wrong {
     display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin: 5px 15px;
     text-transform: lowercase;
     color: red;
     font-size: 12px;
-  }
-  .admin-form__wrap {
-    position: relative;
   }
 </style>
