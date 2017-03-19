@@ -6,7 +6,12 @@ import Result from './components/Result.vue'
 
 export const routes = [
   { path: '', component: Intro },
-  { path: '/admin', component: Admin },
+  { path: '/admin', component: Admin,
+    beforeEnter: (to, from, next) => {
+
+      next(false);
+    }
+  },
   { path: '/login', component: Login },
   { path: '/test', component: Test,
       children: [

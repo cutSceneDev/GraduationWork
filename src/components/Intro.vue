@@ -71,7 +71,7 @@
 </script>
 
 <style lang="scss">
-  @import "../style/sass/colors.scss";
+  @import "../style/sass/main.scss";
 
   .intro-content {
     display: flex;

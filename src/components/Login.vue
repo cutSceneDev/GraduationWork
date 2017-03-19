@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p>Login</p>
-    <p>{{vasya}}</p>
   </div>
 </template>
 

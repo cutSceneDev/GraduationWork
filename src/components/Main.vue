@@ -1,46 +1,47 @@
 <template>
   <div>
-    <div class="main-nav">
-      <div class="main-nav__container">
-        <div class="main-nav__title title">
-          <h1 class="title__main">Student Tester</h1>
+    <div class="main">
+      <div class="main__nav">
+        <div class="nav__container nav__container--center">
+          <h1 class="container__title">Student Tester</h1>
+          <div class="container__list">
+            <router-link class="list__key" to='/' @click="goToMain()">Основная</router-link>
+            <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
+            <button class="list__key list__key--active" @click.prevent="popupShow('admin')">Админ панель</button>
+          </div>
         </div>
-        <div class="main-nav__navigation navigation">
-          <router-link class="navigation__key active" to='/' @click="goToMain()">Основная</router-link>
-          <button class="navigation__key btn__focus" @click.prevent="popupShow('about')">О проекте</button>
-          <button class="navigation__key btn__focus" @click.prevent="popupShow('admin')">Админ панель</button>
+        <div class="nav__popup">
+          <div class="popup__back" v-if="popupAbout || popupAdmin" @click="popupHide()">
+          </div>
+          <div class="popup__about" v-if="popupAbout">
+            <h2 class="about__title">О проекте</h2>
+            <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на:
+              <a class="info__git" href="https://github.com/cutSceneDev/GraduationWork">github</a>
+            </p>
+        </div>
+        <div class="popup__admin" v-if="popupAdmin">
+          <h2 class="admin__title">Вход в панель Администратора</h2>
+          <label class="admin__label" for="login">Введите Логин:</label>
+          <input class="admin__input" id="login" name="login"  v-model="login" placeholder="Логин" autofocus maxlength="28">
+          <label class="admin__label" for="pass">Введите Пароль:</label>
+          <input class="admin__input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль" maxlength="28">
+          <p class="admin__wrong" :style="{visibility: wrongDisplay}">Wrong login or password, try again!</p>
+          <input @click="adminValidation()" class="admin__button" type="button" value="Войти">
         </div>
       </div>
-    </div>
-    <div class="router-content">
-      <div class="router-content__wrap">
-        <router-view></router-view>
       </div>
-    </div>
-    <div class="popup__back" v-if="popupAbout || popupAdmin" @click="popupHide()">
-    </div>
-    <div class="popup__about" v-if="popupAbout">
-      <h2 class="about__title">О проекте</h2>
-      <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на <a class="git-href" href="https://github.com/cutSceneDev/GraduationWork">github.com/cutSceneDev/GraduationWork</a></p>
-    </div>
-    <div class="popup__admin" v-if="popupAdmin">
-      <h2 class="admin__title">Вход в панель Администратора</h2>
-      <form class="admin-form" action="" method="get">
-        <div class="admin-form__wrap">
-          <label class="admin-form__login-label" for="login">Введите Логин:</label>
-          <input class="admin-form__login-input" id="login" name="login" v-model="login" placeholder="Логин" autofocus maxlength="16">
-          <label class="admin-form__pass-label" for="pass">Введите Пароль:</label>
-          <input class="admin-form__pass-input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль" maxlength="16">
-          <p class="wrong" :style="{visibility: wrongDisplay}">Wrong login or password, try again!</p>
-          <input @click="submitValidation()" class="admin-form__submit" type="button" value="Войти">
+      <div class="main__router">
+        <div class="router router--center">
+          <router-view></router-view>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-let Data = require('../data.json');
+const Data = require('../data.json');
+
 module.exports = {
   data: function() {
     return {
@@ -66,9 +67,10 @@ module.exports = {
         window.event.preventDefault();
       };
     },
-    submitValidation: function(event) {
+    adminValidation: function(event) {
       if (this.login === this.storeLogin && this.password === this.storePassword) {
-        alert('enter');
+        this.$router.push('/admin');
+        this.popupHide();
       } else {
         this.wrongDisplay = "visible";
         window.event.preventDefault();
@@ -79,100 +81,57 @@ module.exports = {
 </script>
 
 <style lang="scss">
-  @import "../style/sass/colors.scss";
-
-  html {
-    width: 100%;
-    height: 100%;
-  }
+  @import "../style/sass/main.scss";
   body {
-    min-width: 960px;
-    color: white;
-    font-size: 16px;
-    background: $blue url("../style/img/blue.jpg") top center no-repeat;
+    background: $blue url("../style/img/blue.jpg") top center no-repeat fixed;
     background-size: cover;
-    height: 100%;
     font-family: "Georgia", "Times New Roman", serif;
   }
-  a,
-  button {
-    font-family: "Georgia", "Times New Roman", serif;
-  }
-  .main-nav {
+  .main__nav {
     background-color: black;
-    display: flex;
-    justify-content: center;
-    align-content: flex-start;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
   }
-  .main-nav__container {
+  .nav__container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 960px;
+    &--center{
+      @include center;
+    }
   }
-  .navigation {
+  .container__title {
+    white-space: nowrap;
+    color: $blue;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-right: 100px;
+  }
+  .container__list {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
-    align-items: flex-start;
   }
-  .navigation__key {
-    background-color: #666;
-    border: 1px solid #999;
-    border-radius: 5px;
+  .list__key {
     padding: 10px 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 15px;
+    white-space: nowrap;
+    border: 1px solid #999;
     font-size: 16px;
+
+    background-color: #666;
     color: $grey;
-    margin: 15px 10px;
+    border-radius: 5px;
     text-decoration: none;
-  }
-  .navigation__key:hover,
-  .btn__focus:focus {
-    background-color: $orange;
-    color: black;
-    border: 1px solid black;
+    font-family: "Georgia", "Times New Roman", serif;
     cursor: pointer;
     outline: none;
-  }
-  .title__main {
-    color: $blue;
-    margin: 15px 10px;
-  }
-  .router-content {
-    display: flex;
-    justify-content: center;
-    align-content: flex-start;
-  }
-  .router-content__wrap {
-    width: 960px;
-  }
-  .popup__center-wrap {
-    display: flex;
-    justify-content: flex-start;
-  }
-  .popup__about,
-  .popup__admin {
-    position: absolute;
-    top: 120px;
-    left: 50%;
-    right: 50%;
-    margin-left: -190px;
-    z-index: 10;
-    width: 380px;
-    border: 2px solid $grey;
-    background-color: black;
-    color: $grey;
-    border-radius: 15px;
-    box-shadow: 3px 3px 15px black;
-  }
-  .about__title,
-  .admin__title {
-    margin: 15px 0px;
-    text-align: center;
-    color: $blue;
-  }
-  .about__info {
-    padding: 0 15px;
+
+    &:hover,
+    &--active:focus {
+      background-color: $orange;
+    };
   }
   .popup__back {
     top: 0;
@@ -183,47 +142,83 @@ module.exports = {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1;
   }
-  .git-href,
-  .git-href:visited {
-    color: $orange;
-  }
-  .admin-form__wrap {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-start;
-    align-items: center;
-  }
-  .admin-form__login-input,
-  .admin-form__pass-input {
-    width: 250px;
-    padding: 5px 10px;
-  }
-  .admin-form__login-input {
-    margin-bottom: 15px;
-  }
-  .admin-form__submit {
-    font-weight: bold;
-    background-color: #666;
-    border: 2px solid #999;
-    border-radius: 5px;
-    padding: 5px 35px;
-    font-size: 16px;
+  .popup__about,
+  .popup__admin {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    right: 50%;
+    margin-left: -190px;
+    z-index: 10;
+    width: 400px;
+    border: 2px solid $grey;
+    background-color: black;
     color: $grey;
-    text-decoration: none;
-    outline: none;
-    margin-bottom: 15px;
+    border-radius: 15px;
   }
-  .admin-form__submit:visited {
+  .about__title,
+  .admin__title {
+    margin: 15px;
+    text-align: center;
     color: $blue;
   }
-  .admin-form__submit:hover {
-    color: $orange;
-    border: 2px solid $orange;
+  .about__info {
+    margin: 15px;
   }
-  .wrong {
+  .info__git,
+  .info__git:visited {
+    text-transform: uppercase;
+    color: $orange;
+  }
+  .popup__admin {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .admin__label {
+    margin-bottom: 5px;
+    width: 65%;
+    font-size: 18px;
+  }
+  .admin__input {
+    width: 65%;
+    padding: 5px 10px;
+    margin-bottom: 15px;
+  }
+  .admin__wrong {
     display: block;
     text-transform: lowercase;
-    color: red;
     font-size: 12px;
+    margin: 0;
+    margin-bottom: 15px;
+    color: red;
+  }
+  .admin__button {
+    display: block;
+    margin-bottom: 15px;
+    padding: 5px 35px;
+    border: 2px solid #999;
+
+    font-weight: bold;
+    border-radius: 5px;
+    color: $grey;
+    background-color: #666;
+    outline: none;
+    cursor: pointer;
+
+    &:hover {
+      color: $orange;
+      border: 2px solid $orange;
+    }
+  }
+  .main__router {
+    outline: 1px solid red;
+  }
+  .router {
+    width: 960px;
+    &--center{
+      @include center;
+    }
   }
 </style>
