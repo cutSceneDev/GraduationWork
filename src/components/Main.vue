@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="main">
       <div class="main__nav">
         <div class="nav__container nav__container--center">
@@ -22,7 +21,7 @@
         <div class="popup__admin" v-if="popupAdmin">
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
-          <input class="admin__input" id="login" name="login"  v-model="login" placeholder="Логин" autofocus maxlength="28">
+          <input class="admin__input" id="login" name="login"  v-model="login" autofocus placeholder="Логин" maxlength="28">
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль" maxlength="28">
           <p class="admin__wrong" :style="{visibility: wrongDisplay}">Wrong login or password, try again!</p>
@@ -36,7 +35,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -83,6 +81,7 @@ module.exports = {
 <style lang="scss">
   @import "../style/sass/main.scss";
   body {
+    min-width: 980px;
     background: $blue url("../style/img/blue.jpg") top center no-repeat fixed;
     background-size: cover;
     font-family: "Georgia", "Times New Roman", serif;
@@ -95,7 +94,7 @@ module.exports = {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 960px;
+    width: 980px;
     &--center{
       @include center;
     }
@@ -130,6 +129,8 @@ module.exports = {
 
     &:hover,
     &--active:focus {
+      border: 1px solid black;
+      color: black;
       background-color: $orange;
     };
   }
@@ -185,6 +186,9 @@ module.exports = {
     width: 65%;
     padding: 5px 10px;
     margin-bottom: 15px;
+    &:focus {
+      outline-color: $orange;
+    }
   }
   .admin__wrong {
     display: block;
@@ -212,11 +216,8 @@ module.exports = {
       border: 2px solid $orange;
     }
   }
-  .main__router {
-    outline: 1px solid red;
-  }
   .router {
-    width: 960px;
+    width: 800px;
     &--center{
       @include center;
     }
