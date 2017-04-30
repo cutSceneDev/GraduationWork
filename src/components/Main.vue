@@ -18,15 +18,16 @@
               <a class="info__git" href="https://github.com/cutSceneDev/GraduationWork">github</a>
             </p>
         </div>
-        <div class="popup__admin" v-if="popupAdmin">
+        <form class="popup__admin" action="http://localhost:3000/login" method="post" v-if="popupAdmin">
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
           <input class="admin__input" id="login" name="login"  v-model="login" autofocus placeholder="Логин" maxlength="28">
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль" maxlength="28">
           <p class="admin__wrong" :style="{visibility: wrongDisplay}">Wrong login or password, try again!</p>
-          <input @click="adminValidation()" class="admin__button" type="button" value="Войти">
-        </div>
+          <input  class="admin__button" type="submit" value="Войти">
+          <span>@click="adminValidation()"</span>
+        </form>
       </div>
       </div>
       <div class="main__router">
