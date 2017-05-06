@@ -4,30 +4,29 @@
         <div class="nav__container nav__container--center">
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
-            <router-link class="list__key" to='/' @click="goToMain()">Основная</router-link>
+            <router-link class="list__key" to='/'>Основная</router-link>
             <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
             <button class="list__key list__key--active" @click.prevent="popupShow('admin')">Админ панель</button>
           </div>
         </div>
         <div class="nav__popup">
-          <div class="popup__back" v-if="popupAbout || popupAdmin" @click="popupHide()">
+          <div class="popup__back" v-if="popups.about || popups.admin" @click="popupHide()">
           </div>
-          <div class="popup__about" v-if="popupAbout">
+          <div class="popup__about" v-if="popups.about">
             <h2 class="about__title">О проекте</h2>
             <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на:
               <a class="info__git" href="https://github.com/cutSceneDev/GraduationWork">github</a>
             </p>
         </div>
-        <form class="popup__admin" action="http://localhost:3000/login" method="post" v-if="popupAdmin">
+        <div class="popup__admin" v-if="popups.admin">
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
-          <input class="admin__input" id="login" name="login"  v-model="login" autofocus placeholder="Логин" maxlength="28">
+          <input class="admin__input" id="login" v-model="auth.login" autofocus placeholder="Логин" maxlength="14" value="Artyr" type="text">
           <label class="admin__label" for="pass">Введите Пароль:</label>
-          <input class="admin__input" id="pass" name="password" v-model="password" type="password" placeholder="Пароль" maxlength="28">
-          <p class="admin__wrong" :style="{visibility: wrongDisplay}">Wrong login or password, try again!</p>
-          <input  class="admin__button" type="submit" value="Войти">
-          <span>@click="adminValidation()"</span>
-        </form>
+          <input class="admin__input" id="pass" v-model="auth.password" type="password" placeholder="Пароль" maxlength="14">
+          <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
+          <button class="admin__button" @click="verifyUser('admin')">Войти</button>
+        </div>
       </div>
       </div>
       <div class="main__router">
@@ -39,42 +38,54 @@
 </template>
 
 <script>
-const Data = require('../data.json');
+import axios from 'axios';
 
-module.exports = {
+export default {
   data: function() {
     return {
-      storeLogin: 'Artyr',
-      storePassword: 'hello',
-      popupAbout: false,
-      popupAdmin: false,
-      wrongDisplay: "hidden",
-      login: Data.validation.login,
-      password: Data.validation.password,
+      popups: {
+        about: false,
+        admin: false,
+        wrong: false
+      },
+      auth: {
+        login: 'Artyr',
+        password: 'pass'
+      }
+
     }
   },
   methods: {
-    popupShow: function(name) {
-      if (name === 'about') this.popupAbout = true
-      if (name === 'admin') this.popupAdmin = true
+    popupShow: function(popup) {
+      this.popups[popup] = true;
     },
     popupHide: function() {
-      this.popupAdmin = this.popupAbout = false;
+      this.popups.admin = this.popups.about = false;
     },
-    goToMain: function(event) {
-      if (window.location.href == 'http://localhost:8080/') {
-        window.event.preventDefault();
-      };
-    },
-    adminValidation: function(event) {
-      if (this.login === this.storeLogin && this.password === this.storePassword) {
-        this.$router.push('/admin');
+    verifyUser: function(user) {
+      this.getAccessDB( (acces) => {
+        if (!acces) {
+          this.popups.wrong = true;
+          return;
+        }
+        this.popups.wrong = false;
         this.popupHide();
-      } else {
-        this.wrongDisplay = "visible";
-        window.event.preventDefault();
-      }
+        this.$router.push('/' + user);
+      });
+    },
+    getAccessDB: function(goAuth) {
+      axios.post('http://localhost:3000/database/authAdmin', {
+        login: this.auth.login,
+        password: this.auth.password
+      })
+      .then(function (response) {
+        goAuth(response.data);
+      })
+      .catch(function (error) {
+        console.log(error.data);
+      });
     }
+
   }
 }
 </script>
@@ -160,12 +171,12 @@ module.exports = {
   }
   .about__title,
   .admin__title {
-    margin: 15px;
+    margin: 15px 30px;
     text-align: center;
     color: $blue;
   }
   .about__info {
-    margin: 15px;
+    margin: 20px 30px;
   }
   .info__git,
   .info__git:visited {
@@ -193,15 +204,15 @@ module.exports = {
   }
   .admin__wrong {
     display: block;
-    text-transform: lowercase;
-    font-size: 12px;
     margin: 0;
-    margin-bottom: 15px;
+    font-size: 12px;
+
+    text-transform: lowercase;
     color: red;
   }
   .admin__button {
     display: block;
-    margin-bottom: 15px;
+    margin: 15px 0;
     padding: 5px 35px;
     border: 2px solid #999;
 

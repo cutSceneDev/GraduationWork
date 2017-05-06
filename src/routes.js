@@ -8,7 +8,7 @@ const routes = [
   { path: '', component: Intro },
   { path: '/admin', component: Admin,
     beforeEnter: (to, from, next) => {
-      next(false);
+      next();
     }
   },
   { path: '/login', component: Login },

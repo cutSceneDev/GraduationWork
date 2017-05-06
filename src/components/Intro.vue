@@ -56,16 +56,16 @@
 </template>
 
 <script>
-  module.exports = {
-    data: function() {
-      return {
-
-      }
-    },
-    methods: {
+export default {
+  data: function() {
+    return {
 
     }
+  },
+  methods: {
+
   }
+}
 </script>
 
 <style lang="scss">
@@ -124,6 +124,7 @@
   .intro__login {
     display: block;
     padding: 10px 15px;
+    margin-bottom: 45px;
     width: 350px;
     text-align: center;
     border-radius: 15px;
