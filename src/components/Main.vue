@@ -82,7 +82,7 @@ export default {
         goAuth(response.data);
       })
       .catch(function (error) {
-        console.log(error.data);
+        //console.log(error.data);
       });
     }
 

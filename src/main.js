@@ -6,7 +6,6 @@ import Store from './store'
 import VueResource from 'vue-resource'
 import axios from 'axios'
 
-Vue.use(axios)
 Vue.use(VueRouter);
 Vue.use(VueResource);
 
