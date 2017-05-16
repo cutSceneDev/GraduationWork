@@ -3,7 +3,7 @@
       <div class="intro__content">
         <div class="content__lBar">
           <h2 class="lBar__title">Информация</h2>
-          <p class="lBar__p">Данный сайт создан в образовательных целях для тестирования знаний учащихся в НМетАУ. Любой пользователь сайта имеет возможность выбрать нужный предмет из предложенного списка и ввести информацию о себе, после чего пройти определенное количество вопросов для оценивания знаний. По окончанию теста вы сможете увидеть количество правильных ответов и автоматически рассчитанную оценку на основе Болонской системе оценивания. Информация о каждом, даже прерваном тесте, будет занесена в базу данных.</p>
+          <p class="lBar__p">Данный сайт создан в образовательных целях для тестирования знаний учащихся в НМетАУ. Любой пользователь сайта имеет возможность ввести информацию о себе, после чего пройти определенное количество вопросов для оценивания знаний. По окончанию теста вы сможете увидеть количество правильных ответов и автоматически рассчитанную оценку на основе Болонской системе оценивания. Информация о каждом, даже прерваном тесте, будет занесена в базу данных.</p>
           <p class="lBar__head">Руководитель сайта: Евтушенко Галина Львовна</p>
           <a class="lBar__dev" href="https://github.com/cutSceneDev">Создатель сайта: Решетников Артур Александорович</a>
         </div>
@@ -51,7 +51,7 @@
           </table>
         </div>
       </div>
-      <router-link class="intro__login intro__login--center" to='/login'>Перейти к тестированию</router-link>
+      <router-link class="intro__login intro__login--center" to='/login'>Регистрация</router-link>
     </div>
 </template>
 
@@ -68,7 +68,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import "../style/sass/main.scss";
   .intro__content {
     display: flex;
@@ -100,6 +100,9 @@ export default {
     margin: 0 15px;
     margin-bottom: 15px;
   }
+  .lBar__dev {
+    margin-bottom: 25px;
+  }
   .lBar__head,
   .lBar__dev,
   .lBar__dev:visited {
@@ -108,7 +111,7 @@ export default {
   }
   .rBar__table {
     margin-left: 30px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     color: $orange;
     &--center {
       @include center;

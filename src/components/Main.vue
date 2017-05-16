@@ -31,7 +31,7 @@
       </div>
       <div class="main__router">
         <div class="router router--center">
-          <router-view></router-view>
+          <router-view v-on:show="showMsg"></router-view>
         </div>
       </div>
     </div>
@@ -84,6 +84,9 @@ export default {
       .catch(function (error) {
         //console.log(error.data);
       });
+    },
+    showMsg: function(group, name) {
+      console.log(group, name);
     }
 
   }
@@ -114,13 +117,12 @@ export default {
   .container__title {
     white-space: nowrap;
     color: $blue;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    margin-right: 100px;
+    margin: 15px 100px 15px 15px;
   }
   .container__list {
     display: flex;
     flex-flow: row nowrap;
+    margin-right: 15px;
   }
   .list__key {
     padding: 10px 15px;
@@ -171,12 +173,12 @@ export default {
   }
   .about__title,
   .admin__title {
-    margin: 15px 30px;
+    margin: 15px 15px 10px 15px;
     text-align: center;
     color: $blue;
   }
   .about__info {
-    margin: 20px 30px;
+    margin: 0px 15px 25px 15px;
   }
   .info__git,
   .info__git:visited {

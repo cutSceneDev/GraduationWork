@@ -12,10 +12,8 @@ const routes = [
     }
   },
   { path: '/login', component: Login },
-  { path: '/test', component: Test,
-      children: [
-        { path: 'result', component: Result }
-  ]},
+  { path: '/test', component: Test },
+  { path: '/result', component: Result },
   { path: '*', redirect: '/' }
 ];
 
