@@ -10,10 +10,8 @@
         </select>
         <span class="reg__text-name">Введите свое имя/фамилию</span>
         <input class="reg__name" placeholder="Иван Громов" v-model="form.name">
-
       </div>
-      <button v-on:click="show">11111111111111</button>
-      <router-link class="login__test login__test--center" to='/test'>Начать тестирование</router-link>
+      <button class="login__test" v-on:click="show">Начать тестирование</button>
     </div>
   </div>
 </template>
@@ -32,21 +30,18 @@ export default {
   },
   methods: {
     show: function() {
-      let name = this.check(this.form.name);
-      let group = this.form.group;
-      //console.log(name);
+      let name = this.check(this.form.name), group = this.form.group;
       if (name) {
         this.$emit(`show`, group, name);
+        this.$router.push('/test');
       } else {
         this.form.name = 'Wrong name, try again!'
       }
     },
     check: function(name) {
-      //console.log(name);
       if ( name.split(' ').length == 2 ) {
         for(let i = 0; i < name.length; i++) {
           let code = name.charCodeAt(i);
-          console.log(code);
           if (code == 32 ||   //пробел
               code > 65 && code < 122 ||   //анг алфавит
               code > 1039 && code < 1104) {}  //ру алфавит
@@ -97,7 +92,7 @@ export default {
     display: block;
     padding: 10px 15px;
     margin-bottom: 45px;
-    width: 350px;
+    width: 380px;
     text-align: center;
     border-radius: 15px;
     border: 2px solid $grey;

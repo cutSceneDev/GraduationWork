@@ -51,6 +51,15 @@ export default {
       auth: {
         login: 'Artyr',
         password: 'pass'
+      },
+      testingUser: {
+        name: '',
+        group: '',
+        result: {
+          total: '30',
+          correct: '0',
+          mark: '0'
+        }
       }
 
     }
@@ -79,16 +88,18 @@ export default {
         password: this.auth.password
       })
       .then(function (response) {
+        console.log(response);
         goAuth(response.data);
       })
       .catch(function (error) {
-        //console.log(error.data);
+        console.log(error.data);
       });
     },
     showMsg: function(group, name) {
-      console.log(group, name);
+      this.testingUser.name = name;
+      this.testingUser.group = group;
+      console.log(this.testingUser.name, this.testingUser.group);
     }
-
   }
 }
 </script>
