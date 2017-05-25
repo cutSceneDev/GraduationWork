@@ -21,23 +21,3 @@ new Vue({
   router,
   render: h => h(Main)
 })
-
-//let weather;
-// axios.get('http://localhost:3000/database/testing')
-//   .then(function (response) {
-//     weather = response;
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
-//
-//   axios.post('http://localhost:3000/database/testing', {
-//     id: "('how old are u?','12','16','21','54','3')",
-//   })
-//   .then(function (response) {
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });

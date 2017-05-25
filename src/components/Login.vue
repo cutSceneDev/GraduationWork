@@ -11,7 +11,10 @@
         <span class="reg__text-name">Введите свое имя/фамилию</span>
         <input class="reg__name" placeholder="Иван Громов" v-model="form.name">
       </div>
-      <button class="login__test" v-on:click="show">Начать тестирование</button>
+      <button class="login__test" v-on:click="createUser">Начать тестирование</button>
+    </div>
+    <div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -23,33 +26,32 @@ export default {
   data: function() {
     return {
       form: {
-        name: '',
+        name: 'Artyr Reshetnikov',
         group: 'KN01-13-3'
       }
     }
   },
   methods: {
-    show: function() {
+    createUser: function() {
       let name = this.check(this.form.name), group = this.form.group;
       if (name) {
-        this.$emit(`show`, group, name);
+        this.$emit('eventMain', 'setUser', group, name);
         this.$router.push('/test');
       } else {
         this.form.name = 'Wrong name, try again!'
       }
     },
     check: function(name) {
-      if ( name.split(' ').length == 2 ) {
+      if ( name.split(' ').length != 2 ) return;
         for(let i = 0; i < name.length; i++) {
           let code = name.charCodeAt(i);
-          if (code == 32 ||   //пробел
-              code > 65 && code < 122 ||   //анг алфавит
-              code > 1039 && code < 1104) {}  //ру алфавит
-            else return;
+          if ((code !== 32) &&   //пробел
+              (code < 65 || code > 122 &&   //анг алфавит
+              code < 1039 || code > 1104)) {  //ру алфавит
+            return
+          }
         }
-        return name.toLowerCase();
-      }
-      return;
+      return name.toLowerCase();
     }
   }
 }
@@ -57,6 +59,7 @@ export default {
 
 <style lang="scss" scoped>
   @import "../style/sass/main.scss";
+
   .login__content {
     display: flex;
     justify-content: flex-start;
@@ -96,12 +99,15 @@ export default {
     text-align: center;
     border-radius: 15px;
     border: 2px solid $grey;
+
     background-color: black;
     text-decoration: none;
     box-shadow: 2px 2px 5px black;
     color: $blue;
     text-transform: uppercase;
     outline: none;
+    cursor: pointer;
+
     &:hover {
       color: $orange;
       border: 2px solid $orange;

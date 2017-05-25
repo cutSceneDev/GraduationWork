@@ -4,6 +4,7 @@
         <div class="nav__container nav__container--center">
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
+            <button @click="showResult">showResult</button>
             <router-link class="list__key" to='/'>Основная</router-link>
             <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
             <button class="list__key list__key--active" @click.prevent="popupShow('admin')">Админ панель</button>
@@ -25,13 +26,13 @@
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass" v-model="auth.password" type="password" placeholder="Пароль" maxlength="14">
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
-          <button class="admin__button" @click="verifyUser('admin')">Войти</button>
+          <button class="admin__button" @click="loginAs('admin')">Войти</button>
         </div>
       </div>
       </div>
       <div class="main__router">
         <div class="router router--center">
-          <router-view v-on:show="showMsg"></router-view>
+          <router-view v-on:eventMain="eventHand"></router-view>
         </div>
       </div>
     </div>
@@ -53,26 +54,29 @@ export default {
         password: 'pass'
       },
       testingUser: {
-        name: '',
-        group: '',
+        name: undefined,
+        group: undefined,
         result: {
-          total: '30',
-          correct: '0',
-          mark: '0'
+          total: undefined,
+          correct: undefined,
+          mark: undefined
         }
       }
 
     }
   },
   methods: {
+    showResult: function() {
+      console.log(this.testingUser);
+    },
     popupShow: function(popup) {
       this.popups[popup] = true;
     },
     popupHide: function() {
       this.popups.admin = this.popups.about = false;
     },
-    verifyUser: function(user) {
-      this.getAccessDB( (acces) => {
+    loginAs: function(user) {
+      this.dbgetAccess( (acces) => {
         if (!acces) {
           this.popups.wrong = true;
           return;
@@ -82,23 +86,26 @@ export default {
         this.$router.push('/' + user);
       });
     },
-    getAccessDB: function(goAuth) {
+    dbgetAccess: function(goAuth) {
       axios.post('http://localhost:3000/database/authAdmin', {
         login: this.auth.login,
         password: this.auth.password
       })
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         goAuth(response.data);
       })
       .catch(function (error) {
         console.log(error.data);
       });
     },
-    showMsg: function(group, name) {
+    newUser: function([group, name]) {
       this.testingUser.name = name;
       this.testingUser.group = group;
-      console.log(this.testingUser.name, this.testingUser.group);
+      //console.log(this.testingUser.name, this.testingUser.group);
+    },
+    eventHand: function(fun, ...args) {
+      if (fun === 'setUser') this.newUser(args);
     }
   }
 }
@@ -178,9 +185,10 @@ export default {
     z-index: 10;
     width: 400px;
     border: 2px solid $grey;
+    border-radius: 15px;
+    
     background-color: black;
     color: $grey;
-    border-radius: 15px;
   }
   .about__title,
   .admin__title {
