@@ -2,10 +2,14 @@
   <div class="test">
     <div class="test__content">
       <div class="content__status">
-        <div v-for="(item, index) in results" :class="results[index] ? 'divGreen' : 'divRed'">
+        <div v-for="(item, index) in results" :class="'status__item ' + (results[index] ? 'divGreen' : 'divOrange')" @click="changeQuestion(index)">
+          <span :class="'item__number ' + (activeTest === index ? 'divBlue':'')">{{index + 1}}</span>
         </div>
       </div>
       <div class="content__task">
+        <div class="task__number">
+          <span class="number__current">{{activeTest + 1 + ' / ' + results.length}}</span>
+        </div>
         <div class="task__quest">
           <span class="quest__text">{{currentTest.question}}</span>
         </div>
@@ -34,9 +38,12 @@
 
         </div>
         <div class="task__move">
-          <button class="move__back" @click="prevTest()">Предыдущий вопрос</button>
-          <button class="move__forward" @click="nextTest()">Следующий вопрос</button>
+          <button class="move__back" @click="changeQuestion(activeTest - 1)">Предыдущий вопрос</button>
+          <button class="move__forward" @click="changeQuestion(activeTest + 1)">Следующий вопрос</button>
         </div>
+      </div>
+      <div class="task__finish">
+        <button @click="show()" :class="'finish__text ' + finishClass">Закончить Тест</button>
       </div>
     </div>
     <div>
@@ -79,15 +86,12 @@ export default {
       });
     },
 
-
-    nextTest: function() {
-      if (this.activeTest < this.tests.length - 1) this.activeTest++;
-      //console.log(this.activeTest, this.results[this.activeTest]);
+    changeQuestion: function(number) {
+      if (number > this.results.length - 1 || number < 0) return;
+      this.activeTest = number;
     },
-
-    prevTest: function() {
-      if (this.activeTest > 0) this.activeTest--;
-      //console.log(this.activeTest, this.results[this.activeTest]);
+    show: function() {
+      console.log(this.finishClass)
     }
   },
 
@@ -96,10 +100,16 @@ export default {
     currentTest: function() {
       return this.tests[this.activeTest];
     },
-
     classChanger: function(index) {
       if (this.results[index]) return 'divGreen';
       return 'divRed';
+    },
+    finishClass: function() {
+      for (let el in this.results) {
+        console.log(el);
+        if (this.results[el] === 0) return 'unactive';
+      }
+      return '';
     }
   },
 
@@ -113,6 +123,43 @@ export default {
 <style lang="scss">
   @import "../style/sass/main.scss";
 
+  .finish__text {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 45px;
+    width: 380px;
+    text-align: center;
+    border-radius: 15px;
+    border: 2px solid $grey;
+
+    background-color: black;
+    text-decoration: none;
+    box-shadow: 2px 2px 5px black;
+    color: $blue;
+    text-transform: uppercase;
+    outline: none;
+    cursor: pointer;
+    &:hover {
+      color: $orange;
+      border-color: $orange;
+    }
+  }
+  .unactive {
+    cursor: not-allowed;
+    &:hover {
+      color: $blue;
+      border-color: $grey;
+    }
+  }
+  .number__current {
+    display: block;
+    text-align: center;
+    margin-top: 5px;
+    color: $grey;
+    font-family: "Arila", sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+  }
   .content__status {
     display: flex;
     flex-flow: row nowrap;
@@ -124,13 +171,30 @@ export default {
     border-radius: 15px;
     background-color: $black;
   }
-  .content__status div {
+  .status__item {
     margin: 2px;
-    width: 25px;
-    height: 25px;
+    border-radius: 5px;
+  }
+  .item__number {
+    display: block;
+    vertical-align: middle;
     border: 1px solid $white;
+    padding: 5px 0;
+    width: 30px;
 
     border-radius: 5px;
+    text-align: center;
+    font-family: "Arial", sans-serif;
+    cursor: pointer;
+  }
+  .divOrange {
+    background-color: $orange;
+  }
+  .divGreen {
+    background-color: $green;
+  }
+  .divBlue {
+    background-color: $blue;
   }
   .test__content {
     display: flex;
@@ -143,7 +207,7 @@ export default {
     flex-flow: column nowrap;
 
     min-width: 380px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     border: 2px solid $grey;
 
     border-radius: 15px;
@@ -152,7 +216,7 @@ export default {
     box-shadow: 3px 3px 15px $black;
   }
   .task__quest {
-    margin: 20px 15px 15px 15px;
+    margin: 4px 15px 15px 15px;
     border: 2px solid $orange;
     background: $grey;
     color: $black;
@@ -175,7 +239,7 @@ export default {
   .label__span {
     display: block;
     margin-bottom: 10px;
-    border: 1px solid $black;
+    border: 2px solid $black;
     padding: 8px 15px;
 
     background: $grey;
@@ -216,9 +280,6 @@ export default {
       color: $black;
       border-color: $blue;
     }
-    &--center {
-      @include center;
-    }
   }
   .move__back {
     margin-right: 15px;
@@ -230,11 +291,5 @@ export default {
     background-color: $grey;
     border-color: $black;
     color: $black;
-  }
-  .divRed {
-    background-color: $red;
-  }
-  .divGreen {
-    background-color: $green;
   }
 </style>
