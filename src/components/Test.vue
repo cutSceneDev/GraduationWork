@@ -11,7 +11,7 @@
           <span class="number__current">{{activeTest + 1 + ' / ' + results.length}}</span>
         </div>
         <div class="task__quest">
-          <span class="quest__text">{{currentTest.question}}</span>
+          <span class="quest__text">{{currentTest.question || 'Question'}}</span>
         </div>
         <div class="task__answer">
 
@@ -21,19 +21,19 @@
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="1" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer1}}</span>
+            <span class="label__span">{{currentTest.answer1 || 'Answer1'}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="2" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer2}}</span>
+            <span class="label__span">{{currentTest.answer2 || 'Answer2'}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="3" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer3}}</span>
+            <span class="label__span">{{currentTest.answer3 || 'Answer3'}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="4" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer4}}</span>
+            <span class="label__span">{{currentTest.answer4 || 'Answer4'}}</span>
           </label>
 
         </div>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="task__finish">
-        <button @click="show()" :class="'finish__text ' + finishClass">Закончить Тест</button>
+        <button @click="finishTest()" :class="'finish__text ' + finishClass">Закончить Тест</button>
       </div>
     </div>
     <div>
@@ -56,18 +56,16 @@
 import axios from 'axios';
 
 export default {
-
   data: function() {
     return {
       tests: '',
       results: [],
-      activeTest: 0
+      activeTest: 0,
+      userResult: '',
     }
   },
 
-
   methods: {
-
     getTests: function() {
       let thisEnv = this;
       axios.get('http://localhost:3000/database/tests', {
@@ -85,16 +83,31 @@ export default {
         console.log(error.data);
       });
     },
-
     changeQuestion: function(number) {
       if (number > this.results.length - 1 || number < 0) return;
       this.activeTest = number;
     },
-    show: function() {
-      console.log(this.finishClass)
+    finishTest: function() {
+      let thisEnv = this;
+      axios.post('http://localhost:3000/database/results', {
+        results: thisEnv.results,
+        userInfo: thisEnv.userInfo
+      })
+      .then(function (response) {
+        //console.log(response);
+        console.log(this.user);
+        if (response.data) thisEnv.userResult = response.data;
+        this.showResult();
+      })
+      .catch(function (error) {
+        console.log(error.data);
+      });
+    },
+    showResult: function() {
+      console.log(this.userResult);
+      console.log(this.userInfo);
     }
   },
-
 
   computed: {
     currentTest: function() {
@@ -106,17 +119,17 @@ export default {
     },
     finishClass: function() {
       for (let el in this.results) {
-        console.log(el);
+        //console.log(el);
         if (this.results[el] === 0) return 'unactive';
       }
       return '';
     }
   },
 
-
   mounted: function() {
     this.getTests();
-  }
+  },
+  props: ['userInfo']
 }
 </script>
 

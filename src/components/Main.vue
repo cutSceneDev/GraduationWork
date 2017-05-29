@@ -5,8 +5,9 @@
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
             <button @click="showResult">showResult</button>
-            <router-link class="list__key" to='/'>Основная</router-link>
             <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
+            <router-link class="list__key" to='/'>Главная</router-link>
+            <router-link class="list__key" to='/result'>Результаты</router-link>
             <button class="list__key list__key--active" @click.prevent="popupShow('admin')">Админ панель</button>
           </div>
         </div>
@@ -32,7 +33,7 @@
       </div>
       <div class="main__router">
         <div class="router router--center">
-          <router-view v-on:eventMain="eventHand"></router-view>
+          <router-view v-on:eventMain="eventHand" :userInfo="userInfo"></router-view>
         </div>
       </div>
     </div>
@@ -53,21 +54,15 @@ export default {
         login: 'Artyr',
         password: 'pass'
       },
-      testingUser: {
+      userInfo: {
         name: undefined,
         group: undefined,
-        result: {
-          total: undefined,
-          correct: undefined,
-          mark: undefined
-        }
       }
-
     }
   },
   methods: {
     showResult: function() {
-      console.log(this.testingUser);
+      console.log(this.userInfo);
     },
     popupShow: function(popup) {
       this.popups[popup] = true;
@@ -87,7 +82,7 @@ export default {
       });
     },
     dbgetAccess: function(goAuth) {
-      axios.post('http://localhost:3000/database/authAdmin', {
+      axios.post('http://localhost:3000/database/auth', {
         login: this.auth.login,
         password: this.auth.password
       })
@@ -100,12 +95,21 @@ export default {
       });
     },
     newUser: function([group, name]) {
-      this.testingUser.name = name;
-      this.testingUser.group = group;
+      if(!group || !name) return;
+      this.userInfo.name = name;
+      this.userInfo.group = group;
       //console.log(this.testingUser.name, this.testingUser.group);
     },
+    // setResults: function([total, correct, wrong]) {
+    //   if(!total || !correct || !wrong) return;
+    //   this.testingUser.total = total;
+    //   this.testingUser.correct = correct;
+    //   this.testingUser.wrong = wrong;
+    //   console.log(this.testingUser);
+    // }
     eventHand: function(fun, ...args) {
       if (fun === 'setUser') this.newUser(args);
+      // if (fun === 'setResults') this.setResults(args);
     }
   }
 }
@@ -186,7 +190,7 @@ export default {
     width: 400px;
     border: 2px solid $grey;
     border-radius: 15px;
-    
+
     background-color: black;
     color: $grey;
   }
