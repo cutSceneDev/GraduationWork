@@ -61,7 +61,7 @@ export default {
       tests: '',
       results: [],
       activeTest: 0,
-      userResult: '',
+      userInfo: ''
     }
   },
 
@@ -80,7 +80,7 @@ export default {
         }
       })
       .catch(function (error) {
-        console.log(error.data);
+        console.log(error);
       });
     },
     changeQuestion: function(number) {
@@ -89,23 +89,32 @@ export default {
     },
     finishTest: function() {
       let thisEnv = this;
+      //console.log(thisEnv.results, thisEnv.userData);
+      if (thisEnv.results && thisEnv.userData) {
+        for (let el in thisEnv.results) {
+          if (thisEnv.results[el] === 0) {
+            //console.log('return finishTest for if');
+            return;
+          }
+        }
+      } else {
+        //console.log('return finishTest else');
+        return;
+      }
       axios.post('http://localhost:3000/database/results', {
         results: thisEnv.results,
-        userInfo: thisEnv.userInfo
+        userInfo: thisEnv.userData
       })
       .then(function (response) {
-        //console.log(response);
-        console.log(this.user);
-        if (response.data) thisEnv.userResult = response.data;
-        this.showResult();
+        thisEnv.showResult(response.data);
       })
       .catch(function (error) {
-        console.log(error.data);
+        console.log(error);
       });
     },
-    showResult: function() {
-      console.log(this.userResult);
-      console.log(this.userInfo);
+    showResult: function(res) {
+      //console.log(res);
+      this.$emit('showResult', res);
     }
   },
 
@@ -129,7 +138,7 @@ export default {
   mounted: function() {
     this.getTests();
   },
-  props: ['userInfo']
+  props: ['userData']
 }
 </script>
 

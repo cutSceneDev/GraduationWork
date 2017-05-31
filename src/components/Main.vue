@@ -4,21 +4,32 @@
         <div class="nav__container nav__container--center">
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
-            <button @click="showResult">showResult</button>
+            <button @click="show()">results</button>
             <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
             <router-link class="list__key" to='/'>Главная</router-link>
             <router-link class="list__key" to='/result'>Результаты</router-link>
             <button class="list__key list__key--active" @click.prevent="popupShow('admin')">Админ панель</button>
           </div>
         </div>
-        <div class="nav__popup">
-          <div class="popup__back" v-if="popups.about || popups.admin" @click="popupHide()">
+      <div class="nav__popup">
+        <div class="popup__back" v-if="popups.result || popups.about || popups.admin " @click="popupHide()"></div>
+        <div class="popup__result" v-if="popups.result">
+          <h2 class="result__title">Результаты тестирования:</h2>
+          <p class="result__text">Группа: <span class="result__group">{{userData.group}}</span></p>
+          <p class="result__text">Имя: <span class="result__name">{{userData.name}}</span></p>
+          <p class="result__text">Всего вопросов: <span class="result__total">{{userData.total}}</span></p>
+          <p class="result__text">Правильно: <span class="result__correct">{{userData.correct}}</span></p>
+          <p class="result__text">Ошибок: <span class="result__wrong">{{userData.wrong}}</span></p>
+          <div class="result__buttons">
+            <button class="list__key" @click="changeComponent('')">Главная</button>
+            <button class="list__key" @click="changeComponent('result')">Результаты</button>
           </div>
-          <div class="popup__about" v-if="popups.about">
-            <h2 class="about__title">О проекте</h2>
-            <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на:
-              <a class="info__git" href="https://github.com/cutSceneDev/GraduationWork">github</a>
-            </p>
+        </div>
+        <div class="popup__about" v-if="popups.about">
+          <h2 class="about__title">О проекте</h2>
+          <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на:
+            <a class="info__git" href="https://github.com/cutSceneDev/GraduationWork">github</a>
+          </p>
         </div>
         <div class="popup__admin" v-if="popups.admin">
           <h2 class="admin__title">Вход в панель Администратора</h2>
@@ -27,13 +38,13 @@
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass" v-model="auth.password" type="password" placeholder="Пароль" maxlength="14">
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
-          <button class="admin__button" @click="loginAs('admin')">Войти</button>
+          <button class="admin__button" @click="loginUser('admin')">Войти</button>
         </div>
       </div>
       </div>
       <div class="main__router">
         <div class="router router--center">
-          <router-view v-on:eventMain="eventHand" :userInfo="userInfo"></router-view>
+          <router-view @setUser="setUserInfo" @showResult="showResult" :userData="userData"></router-view>
         </div>
       </div>
     </div>
@@ -46,6 +57,7 @@ export default {
   data: function() {
     return {
       popups: {
+        result: false,
         about: false,
         admin: false,
         wrong: false
@@ -54,31 +66,38 @@ export default {
         login: 'Artyr',
         password: 'pass'
       },
-      userInfo: {
-        name: undefined,
-        group: undefined,
-      }
+      userData: {}
     }
   },
   methods: {
-    showResult: function() {
-      console.log(this.userInfo);
+    show: function() {
+      this.userData = {name: 'Artyr Reshetnikov',
+                       group: 'KN01-13-3',
+                       total: '30',
+                       correct: '18',
+                       wrong: '12'};
+      this.popupShow('result')
+    },
+    showResult: function(resultData) {
+      if (!resultData) return;
+      this.setUserResult(resultData);
+      this.popupShow('result');
     },
     popupShow: function(popup) {
       this.popups[popup] = true;
     },
-    popupHide: function() {
+    popupHide: function(comp) {
       this.popups.admin = this.popups.about = false;
+      if (comp === 'result' || comp === '') this.popups.result = false;
     },
-    loginAs: function(user) {
+    loginUser: function(user) {
       this.dbgetAccess( (acces) => {
         if (!acces) {
           this.popups.wrong = true;
           return;
         }
         this.popups.wrong = false;
-        this.popupHide();
-        this.$router.push('/' + user);
+        this.changeComponent(user)
       });
     },
     dbgetAccess: function(goAuth) {
@@ -91,25 +110,25 @@ export default {
         goAuth(response.data);
       })
       .catch(function (error) {
-        console.log(error.data);
+        console.log(error);
       });
     },
-    newUser: function([group, name]) {
-      if(!group || !name) return;
-      this.userInfo.name = name;
-      this.userInfo.group = group;
-      //console.log(this.testingUser.name, this.testingUser.group);
+    setUserInfo: function(info) {
+      //console.log(info);
+      if(!info) return;
+      this.userData.name = info.name;
+      this.userData.group = info.group;
     },
-    // setResults: function([total, correct, wrong]) {
-    //   if(!total || !correct || !wrong) return;
-    //   this.testingUser.total = total;
-    //   this.testingUser.correct = correct;
-    //   this.testingUser.wrong = wrong;
-    //   console.log(this.testingUser);
-    // }
-    eventHand: function(fun, ...args) {
-      if (fun === 'setUser') this.newUser(args);
-      // if (fun === 'setResults') this.setResults(args);
+    setUserResult: function(results) {
+      //console.log(results);
+      if(!results) return;
+      this.userData.total = results.total;
+      this.userData.correct = results.correct;
+      this.userData.wrong = results.wrong;
+    },
+    changeComponent: function(comp) {
+      this.popupHide(comp);
+      this.$router.push('/' + comp);
     }
   }
 }
@@ -179,6 +198,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1;
   }
+  .popup__result,
   .popup__about,
   .popup__admin {
     position: absolute;
@@ -194,6 +214,26 @@ export default {
     background-color: black;
     color: $grey;
   }
+  .popup__result {
+
+  }
+  .result__text {
+    margin: 20px 20px 15px 15px;;
+  }
+  .result__name,
+  .result__group {
+    color: $orange;
+  }
+  .result__total {
+    color: $blue;
+  }
+  .result__correct {
+    color: $green;
+  }
+  .result__wrong {
+    color: $red;
+  }
+  .result__title,
   .about__title,
   .admin__title {
     margin: 15px 15px 10px 15px;

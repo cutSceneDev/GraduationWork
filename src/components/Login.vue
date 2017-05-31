@@ -33,9 +33,9 @@ export default {
   },
   methods: {
     createUser: function() {
-      let name = this.check(this.form.name), group = this.form.group;
-      if (name) {
-        this.$emit('eventMain', 'setUser', group, name);
+      if ( this.check(this.form.name) ) {
+        //console.log(this.form);
+        this.$emit('setUser', this.form);
         this.$router.push('/test');
       } else {
         this.form.name = 'Wrong name, try again!'
