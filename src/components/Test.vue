@@ -21,19 +21,19 @@
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="1" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer1}}</span>
+            <span class="label__span">{{upperCase(currentTest.answer1)}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="2" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer2}}</span>
+            <span class="label__span">{{upperCase(currentTest.answer2)}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="3" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer3}}</span>
+            <span class="label__span">{{upperCase(currentTest.answer3)}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="4" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer4}}</span>
+            <span class="label__span">{{upperCase(currentTest.answer4)}}</span>
           </label>
 
         </div>
@@ -92,10 +92,15 @@ export default {
       let quality = 20;
       axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
       .then(function (response) {
-        if (response.data) that.tests = response.data;
+        if (response.data) {
+          that.tests = response.data;
+        }
         if (response.data.length !== that.results.length) {
           that.results = [];
-          response.data.forEach( (el)=> that.results.push({id:el.id_question ,answer:0}) );
+          response.data.forEach( (el)=> that.results.push({
+            id : el.id_question,
+            answer : 0
+          }));
         }
       })
       .catch(function (error) {
@@ -117,13 +122,12 @@ export default {
       } else {
         return;
       }
-      console.log(that.results);
+      //console.log(that.results);
       axios.post('http://localhost:3000/database/results', {
         results: that.results,
         userInfo: that.userData
       })
       .then(function (response) {
-        //console.log(response);
         that.showResult(response.data);
       })
       .catch(function (error) {
@@ -133,6 +137,9 @@ export default {
     showResult: function(res) {
       //console.log(res);
       this.$emit('showResult', res);
+    },
+    upperCase: function(str) {
+      return str[0].toUpperCase() + str.slice(1);
     }
   },
 
@@ -245,7 +252,7 @@ export default {
     display: flex;
     flex-flow: column nowrap;
 
-    min-width: 380px;
+    width: 600px;
     margin-bottom: 30px;
     border: 2px solid $grey;
 

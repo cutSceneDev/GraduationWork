@@ -19,6 +19,7 @@
           <p class="result__text">Всего вопросов: <span class="result__total">{{userData.total}}</span></p>
           <p class="result__text">Правильно: <span class="result__correct">{{userData.correct}}</span></p>
           <p class="result__text">Ошибок: <span class="result__wrong">{{userData.wrong}}</span></p>
+          <p class="result__text">Рекомендованная оценка: <span class="result__mark">{{userData.mark}}</span></p>
           <div class="result__buttons">
             <button class="list__key" @click="changeComponent('')">Главная</button>
             <button class="list__key" @click="changeComponent('result')">Результаты</button>
@@ -70,7 +71,6 @@ export default {
   },
   methods: {
     showResult: function(resultData) {
-      console.log(resultData);
       if (!resultData) return;
       this.setUserResult(resultData);
       this.popupShow('result');
@@ -98,7 +98,6 @@ export default {
         password: this.auth.password
       })
       .then(function (response) {
-        //console.log(response);
         goAuth(response.data);
       })
       .catch(function (error) {
@@ -106,17 +105,16 @@ export default {
       });
     },
     setUserInfo: function(info) {
-      //console.log(info);
       if(!info) return;
       this.userData.name = info.name;
       this.userData.group = info.group;
     },
     setUserResult: function(results) {
-      //console.log(results);
       if(!results) return;
       this.userData.total = results.total;
       this.userData.correct = results.correct;
       this.userData.wrong = results.wrong;
+      this.userData.mark = results.mark;
     },
     changeComponent: function(comp) {
       this.popupHide(comp);
@@ -224,6 +222,9 @@ export default {
   }
   .result__wrong {
     color: $red;
+  }
+  .result__mark {
+    color: $yellow;
   }
   .result__title,
   .about__title,
