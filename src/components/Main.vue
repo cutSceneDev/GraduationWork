@@ -4,7 +4,6 @@
         <div class="nav__container nav__container--center">
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
-            <button @click="show()">results</button>
             <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
             <router-link class="list__key" to='/'>Главная</router-link>
             <router-link class="list__key" to='/result'>Результаты</router-link>
@@ -70,15 +69,8 @@ export default {
     }
   },
   methods: {
-    show: function() {
-      this.userData = {name: 'Artyr Reshetnikov',
-                       group: 'KN01-13-3',
-                       total: '30',
-                       correct: '18',
-                       wrong: '12'};
-      this.popupShow('result')
-    },
     showResult: function(resultData) {
+      console.log(resultData);
       if (!resultData) return;
       this.setUserResult(resultData);
       this.popupShow('result');

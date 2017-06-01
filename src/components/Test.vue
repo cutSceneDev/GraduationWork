@@ -2,7 +2,7 @@
   <div class="test">
     <div class="test__content">
       <div class="content__status">
-        <div v-for="(item, index) in results" :class="'status__item ' + (results[index] ? 'divGreen' : 'divOrange')" @click="changeQuestion(index)">
+        <div v-for="(item, index) in results" :class="'status__item ' + (results[index].answer ? 'divGreen' : 'divOrange')" @click="changeQuestion(index)">
           <span :class="'item__number ' + (activeTest === index ? 'divBlue':'')">{{index + 1}}</span>
         </div>
       </div>
@@ -11,29 +11,29 @@
           <span class="number__current">{{activeTest + 1 + ' / ' + results.length}}</span>
         </div>
         <div class="task__quest">
-          <span class="quest__text">{{currentTest.question || 'Question'}}</span>
+          <span class="quest__text">{{currentTest.question}}</span>
         </div>
         <div class="task__answer">
 
           <label style="display:none">
-            <input name="answer" type="radio" value="0" v-model="results[activeTest]">
+            <input name="answer" type="radio" value="0" v-model="results[activeTest].answer">
             <span class="label__span">--Не выбран--</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="1" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer1 || 'Answer1'}}</span>
+            <input class="label__radio" name="answer" type="radio" value="1" v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer1}}</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="2" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer2 || 'Answer2'}}</span>
+            <input class="label__radio" name="answer" type="radio" value="2" v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer2}}</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="3" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer3 || 'Answer3'}}</span>
+            <input class="label__radio" name="answer" type="radio" value="3" v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer3}}</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="4" v-model="results[activeTest]">
-            <span class="label__span">{{currentTest.answer4 || 'Answer4'}}</span>
+            <input class="label__radio" name="answer" type="radio" value="4" v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer4}}</span>
           </label>
 
         </div>
@@ -44,6 +44,9 @@
       </div>
       <div class="task__finish">
         <button @click="finishTest()" :class="'finish__text ' + finishClass">Закончить Тест</button>
+        <button @click="show()">testsObject</button>
+        <button @click="sho()">eventPopup</button>
+        <button @click="sh()">complateTests</button>
       </div>
     </div>
     <div>
@@ -58,7 +61,13 @@ import axios from 'axios';
 export default {
   data: function() {
     return {
-      tests: '',
+      tests: {
+        temp: {question: "Question?",
+               answer1: 'Answer1',
+               answer2: 'Answer2',
+               answer3: 'Answer3',
+               answer4: 'Answer4',
+               answer: 0}},
       results: [],
       activeTest: 0,
       userInfo: ''
@@ -66,17 +75,27 @@ export default {
   },
 
   methods: {
+    show: function() {
+      console.log(this.results);
+    },
+    sho: function() {
+      this.$emit('showResult', {total: 30, correct: 10, wrong: 20});
+    },
+    sh: function() {
+      for (let el in this.results) {
+        this.results[el].answer = 1;
+      }
+    },
+
     getTests: function() {
-      let thisEnv = this;
-      axios.get('http://localhost:3000/database/tests', {
-        qua: 30,
-      })
+      let that = this;
+      let quality = 20;
+      axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
       .then(function (response) {
-        //console.log(response);
-        if (response.data && !thisEnv.tests) thisEnv.tests = response.data;
-        if (response.data.length !== thisEnv.results.length) {
-          thisEnv.results = [];
-          response.data.forEach( ()=> thisEnv.results.push(0) );
+        if (response.data) that.tests = response.data;
+        if (response.data.length !== that.results.length) {
+          that.results = [];
+          response.data.forEach( (el)=> that.results.push({id:el.id_question ,answer:0}) );
         }
       })
       .catch(function (error) {
@@ -88,25 +107,24 @@ export default {
       this.activeTest = number;
     },
     finishTest: function() {
-      let thisEnv = this;
-      //console.log(thisEnv.results, thisEnv.userData);
-      if (thisEnv.results && thisEnv.userData) {
-        for (let el in thisEnv.results) {
-          if (thisEnv.results[el] === 0) {
-            //console.log('return finishTest for if');
+      let that = this;
+      if (that.results && that.userData) {
+        for (let el in that.results) {
+          if (that.results[el].answer === 0) {
             return;
           }
         }
       } else {
-        //console.log('return finishTest else');
         return;
       }
+      console.log(that.results);
       axios.post('http://localhost:3000/database/results', {
-        results: thisEnv.results,
-        userInfo: thisEnv.userData
+        results: that.results,
+        userInfo: that.userData
       })
       .then(function (response) {
-        thisEnv.showResult(response.data);
+        //console.log(response);
+        that.showResult(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -120,7 +138,7 @@ export default {
 
   computed: {
     currentTest: function() {
-      return this.tests[this.activeTest];
+      return this.tests[this.activeTest] || this.tests.temp;
     },
     classChanger: function(index) {
       if (this.results[index]) return 'divGreen';
@@ -128,8 +146,7 @@ export default {
     },
     finishClass: function() {
       for (let el in this.results) {
-        //console.log(el);
-        if (this.results[el] === 0) return 'unactive';
+        if (this.results[el].answer === 0) return 'unactive';
       }
       return '';
     }
@@ -278,7 +295,7 @@ export default {
   }
   .task__move {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     flex-flow: row nowrap;
     margin: 0 15px 20px 15px;
   }
