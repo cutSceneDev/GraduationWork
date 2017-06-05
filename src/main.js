@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import routes from './routes'
+import { routes, secureRoute } from './routes'
 import Main from './components/Main.vue'
 import Store from './store'
 import VueResource from 'vue-resource'
@@ -13,6 +13,8 @@ const router = new VueRouter({
   mode: 'history',
   routes
 });
+
+router.beforeEach(secureRoute);
 
 new Vue({
   el: '#app',

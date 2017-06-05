@@ -14,7 +14,6 @@
           <span class="quest__text">{{currentTest.question}}</span>
         </div>
         <div class="task__answer">
-
           <label style="display:none">
             <input name="answer" type="radio" value="0" v-model="results[activeTest].answer">
             <span class="label__span">--Не выбран--</span>
@@ -169,6 +168,23 @@ export default {
 <style lang="scss">
   @import "../style/sass/main.scss";
 
+  .animate-enter {
+    opacity: 0;
+    transform: translateX(150%);
+  } .animate-leave {
+    opacity: 1;
+    transform: translateX(50%);
+  }
+  .animate-leave-to {
+    transform: translateX(-150%);
+  } .animate-enter-to {
+    transform: translateX(50%);
+  }
+  .animate-enter-active {
+    transition: all .3s ease;
+  } .animate-leave-active {
+    transition: all .3s ease;
+  }
   .finish__text {
     display: block;
     padding: 10px 15px;

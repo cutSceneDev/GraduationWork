@@ -21,13 +21,15 @@
           <p class="result__text">Ошибок: <span class="result__wrong">{{userData.wrong}}</span></p>
           <p class="result__text">Рекомендованная оценка: <span class="result__mark">{{userData.mark}}</span></p>
           <div class="result__buttons">
-            <button class="list__key" @click="changeComponent('')">Главная</button>
+            <button class="list__key" @click="changeComponent('main')">Главная</button>
             <button class="list__key" @click="changeComponent('result')">Результаты</button>
           </div>
         </div>
         <div class="popup__about" v-if="popups.about">
           <h2 class="about__title">О проекте</h2>
-          <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г. Проект является SPA приложением с использованием библиотеки Vue.js и его основных плагинов, также в проекте используется JS, HTML, CSS(scss) и Webpack в качестве сборщика. Оригинал проекта храниться на:
+          <p class="about__info">Проект разработан в качестве дипломной работы учащегося в НМетАУ студента 4 курса Решетникова Артура в 2017г.<br>
+          Програмный продукт являеться полноценным SPA приложением написаном на JavaScript, HTML, CSS(scss). В качестве библиотек/фреймворков проект использует Vue js(Router, Axios), Node js(MySQL, Express) и Webpack в качестве сборщика.<br>
+          Оригинал проекта храниться на:
             <a class="info__git" href="https://github.com/cutSceneDev/GraduationWork">github</a>
           </p>
         </div>
@@ -80,7 +82,7 @@ export default {
     },
     popupHide: function(comp) {
       this.popups.admin = this.popups.about = false;
-      if (comp === 'result' || comp === '') this.popups.result = false;
+      if (comp === 'result' || comp === 'main') this.popups.result = false;
     },
     loginUser: function(user) {
       this.dbgetAccess( (acces) => {
@@ -118,7 +120,7 @@ export default {
     },
     changeComponent: function(comp) {
       this.popupHide(comp);
-      this.$router.push('/' + comp);
+      this.$router.push({name: comp, params: {access: true}});
     }
   }
 }
@@ -130,7 +132,11 @@ export default {
     min-width: 980px;
     background: $blue url("../style/img/blue.jpg") top center no-repeat fixed;
     background-size: cover;
-    font-family: "Georgia", "Times New Roman", serif;
+    font-family: "Verdana", "Arial", sans-serif;
+  }
+  button,
+  input {
+    font-family: "Verdana", "Arial", sans-serif;
   }
   .main__nav {
     background-color: black;

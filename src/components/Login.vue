@@ -20,8 +20,6 @@
 </template>
 
 <script>
-const Data = require('../data.json')
-
 export default {
   data: function() {
     return {
@@ -36,7 +34,7 @@ export default {
       if ( this.check(this.form.name) ) {
         //console.log(this.form);
         this.$emit('setUser', this.form);
-        this.$router.push('/test');
+        this.$router.push({name: 'test'});
       } else {
         this.form.name = 'Wrong name, try again!'
       }

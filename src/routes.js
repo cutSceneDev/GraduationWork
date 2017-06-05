@@ -4,17 +4,28 @@ import Login from './components/Login.vue'
 import Test from './components/Test.vue'
 import Result from './components/Result.vue'
 
+export { routes, secureRoute };
+
 const routes = [
-  { path: '', component: Intro },
-  { path: '/admin', component: Admin,
-    beforeEnter: (to, from, next) => {
-      next();
-    }
-  },
-  { path: '/login', component: Login },
-  { path: '/test', component: Test },
-  { path: '/result', component: Result },
-  { path: '*', redirect: '/' }
+  { path: '', name: 'main', component: Intro },
+  { path: '/admin', name: 'admin', component: Admin },
+  { path: '/login', name: 'login', component: Login },
+  { path: '/test', name: 'test', component: Test },
+  { path: '/result', name: 'result', component: Result },
+  { path: '*', name: 'all', redirect: '/' }
 ];
 
-export default routes;
+const secureRoute = function(to, from, next) {
+  let access = true;
+  if (from.name == 'test') {
+    access = false;
+  }
+  if (to.name == 'test' && from.name != 'login') {
+    access = {name: 'all'};
+  }
+  if (from.name == 'test' && to.params.access) {
+    access = true;
+  }
+  console.log(from, ' => ', to, ' // ', access);
+  next(access);
+}
