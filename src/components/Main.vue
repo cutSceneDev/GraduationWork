@@ -36,7 +36,7 @@
         <div class="popup__admin" v-if="popups.admin">
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
-          <input class="admin__input" id="login" v-model="auth.login" autofocus placeholder="Логин" maxlength="14" value="Artyr" type="text">
+          <input class="admin__input" id="login" v-model="auth.login" autofocus placeholder="Логин" maxlength="99" value="Artyr" type="text">
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass" v-model="auth.password" type="password" placeholder="Пароль" maxlength="14">
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
@@ -71,6 +71,7 @@ export default {
       userData: {}
     }
   },
+
   methods: {
     showResult: function(resultData) {
       if (!resultData) return;
@@ -82,7 +83,9 @@ export default {
     },
     popupHide: function(comp) {
       this.popups.admin = this.popups.about = false;
-      if (comp === 'result' || comp === 'main') this.popups.result = false;
+      if (comp === 'result' || comp === 'main') {
+        this.popups.result = false;
+      }
     },
     loginUser: function(user) {
       this.dbgetAccess( (acces) => {

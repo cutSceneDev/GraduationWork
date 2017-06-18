@@ -19,7 +19,6 @@ router.beforeEach(secureRoute);
 new Vue({
   el: '#app',
   axios,
-  Store,
   router,
   render: h => h(Main)
 })

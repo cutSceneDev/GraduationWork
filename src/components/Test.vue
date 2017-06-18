@@ -62,12 +62,12 @@ export default {
     return {
       tests: {
         temp: {question: "Question?",
+               answer: 0,
                answer1: 'Answer1',
                answer2: 'Answer2',
                answer3: 'Answer3',
-               answer4: 'Answer4',
-               answer: 0}},
-      results: [],
+               answer4: 'Answer4'}},
+      results: [0],
       activeTest: 0,
       userInfo: ''
     }

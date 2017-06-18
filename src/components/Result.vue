@@ -44,17 +44,15 @@ export default {
       axios.get('http://localhost:3000/database/stat')
       .then(function (response) {
         that.results = response.data.reverse();
+        if (that.results.length > 50) {
+          that.results = that.results.slice(0, 50);
+        }
       })
       .catch(function (error) {
         console.log(error);
       });
     }
   },
-
-  computed: {
-
-  },
-
   mounted: function() {
     this.getStat();
   }

@@ -26,6 +26,6 @@ const secureRoute = function(to, from, next) {
   if (from.name == 'test' && to.params.access) {
     access = true;
   }
-  console.log(from, ' => ', to, ' // ', access);
+  //console.log(from, ' => ', to, ' // ', access);
   next(access);
 }

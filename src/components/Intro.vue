@@ -70,6 +70,7 @@ export default {
 
 <style lang="scss" scoped>
   @import "../style/sass/main.scss";
+
   .intro__content {
     display: flex;
     flex-flow: row nowrap;
