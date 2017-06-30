@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
-    "gridlex": "^2.2.5",
     "normalize.css": "^5.0.0",
     "vue": "^2.2.1",
     "vue-axios": "^2.0.2",
