@@ -2,16 +2,21 @@
   <div class="test">
     <div class="test__content">
       <div class="content__status">
-        <div v-for="(item, index) in results" :class="'status__item ' + (results[index].answer ? 'divGreen' : 'divOrange')" @click="changeQuestion(index)">
-          <span :class="'item__number ' + (activeTest === index ? 'divBlue':'')">{{index + 1}}</span>
-        </div>
+        <div v-for="(item, index) in results"
+        class="status__item"
+        :class=" index === activeTest ?
+         'blue' : results[index].answer ?
+         'green' : 'orange' "
+        @click="changeQuestion(index)">
+        {{index + 1}}
+      </div>
       </div>
       <div class="content__task">
         <div class="task__number">
-          <span class="number__current">{{activeTest + 1 + ' / ' + results.length}}</span>
+          <span class="number__current">{{activeTotal}}</span>
         </div>
         <div class="task__quest">
-          <span class="quest__text">{{currentTest.question}}</span>
+          <span class="quest__text">{{currentTest.question | upperCase}}</span>
         </div>
         <div class="task__answer">
           <label style="display:none">
@@ -20,19 +25,19 @@
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="1" v-model="results[activeTest].answer">
-            <span class="label__span">{{upperCase(currentTest.answer1)}}</span>
+            <span class="label__span">{{currentTest.answer1 | upperCase}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="2" v-model="results[activeTest].answer">
-            <span class="label__span">{{upperCase(currentTest.answer2)}}</span>
+            <span class="label__span">{{currentTest.answer2 | upperCase}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="3" v-model="results[activeTest].answer">
-            <span class="label__span">{{upperCase(currentTest.answer3)}}</span>
+            <span class="label__span">{{currentTest.answer3 | upperCase}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="4" v-model="results[activeTest].answer">
-            <span class="label__span">{{upperCase(currentTest.answer4)}}</span>
+            <span class="label__span">{{currentTest.answer4 | upperCase}}</span>
           </label>
 
         </div>
@@ -60,14 +65,8 @@ import axios from 'axios';
 export default {
   data: function() {
     return {
-      tests: {
-        temp: {question: "Question?",
-               answer: 0,
-               answer1: 'Answer1',
-               answer2: 'Answer2',
-               answer3: 'Answer3',
-               answer4: 'Answer4'}},
-      results: [0],
+      tests: {},
+      results: [],
       activeTest: 0,
       userInfo: ''
     }
@@ -87,16 +86,16 @@ export default {
     },
 
     getTests: function() {
-      let that = this;
+      //let that = this;
       let quality = 20;
       axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
-      .then(function (response) {
+      .then((response) => {
         if (response.data) {
-          that.tests = response.data;
+          this.tests = response.data;
         }
-        if (response.data.length !== that.results.length) {
-          that.results = [];
-          response.data.forEach( (el)=> that.results.push({
+        if (response.data.length !== this.results.length) {
+          this.results = [];
+          response.data.forEach( (el)=> this.results.push({
             id : el.id_question,
             answer : 0
           }));
@@ -111,38 +110,35 @@ export default {
       this.activeTest = number;
     },
     finishTest: function() {
-      let that = this;
-      if (that.results && that.userData) {
-        for (let el in that.results) {
-          if (that.results[el].answer === 0) {
+      if (this.results && this.userData) {
+        for (let el in this.results) {
+          if (this.results[el].answer === 0) {
             return;
           }
         }
       } else {
         return;
       }
-      //console.log(that.results);
       axios.post('http://localhost:3000/database/results', {
-        results: that.results,
-        userInfo: that.userData
+        results: this.results,
+        userInfo: this.userData
       })
-      .then(function (response) {
-        that.showResult(response.data);
+      .then((response) => {
+        this.showResult(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
     },
     showResult: function(res) {
-      //console.log(res);
       this.$emit('showResult', res);
-    },
-    upperCase: function(str) {
-      return str[0].toUpperCase() + str.slice(1);
     }
   },
 
   computed: {
+    activeTotal: function() {
+      return `${this.activeTest + 1} / ${this.results.length}`
+    },
     currentTest: function() {
       return this.tests[this.activeTest] || this.tests.temp;
     },
@@ -158,9 +154,16 @@ export default {
     }
   },
 
+  filters: {
+    upperCase: function(str) {
+      return str[0].toUpperCase() + str.slice(1);
+    }
+  },
+
   mounted: function() {
     this.getTests();
   },
+
   props: ['userData']
 }
 </script>
@@ -168,23 +171,6 @@ export default {
 <style lang="scss">
   @import "../style/sass/main.scss";
 
-  .animate-enter {
-    opacity: 0;
-    transform: translateX(150%);
-  } .animate-leave {
-    opacity: 1;
-    transform: translateX(50%);
-  }
-  .animate-leave-to {
-    transform: translateX(-150%);
-  } .animate-enter-to {
-    transform: translateX(50%);
-  }
-  .animate-enter-active {
-    transition: all .3s ease;
-  } .animate-leave-active {
-    transition: all .3s ease;
-  }
   .finish__text {
     display: block;
     padding: 10px 15px;
@@ -236,8 +222,6 @@ export default {
   .status__item {
     margin: 2px;
     border-radius: 5px;
-  }
-  .item__number {
     display: block;
     vertical-align: middle;
     border: 1px solid $white;
@@ -249,13 +233,11 @@ export default {
     font-family: "Arial", sans-serif;
     cursor: pointer;
   }
-  .divOrange {
+  .orange {
     background-color: $orange;
-  }
-  .divGreen {
+  } .green {
     background-color: $green;
-  }
-  .divBlue {
+  } .blue {
     background-color: $blue;
   }
   .test__content {

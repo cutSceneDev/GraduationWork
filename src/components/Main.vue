@@ -136,6 +136,7 @@ export default {
     background: $blue url("../style/img/blue.jpg") top center no-repeat fixed;
     background-size: cover;
     font-family: "Verdana", "Arial", sans-serif;
+    user-select: none;
   }
   button,
   input {
