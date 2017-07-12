@@ -1,4 +1,4 @@
-<template>
+﻿<template>
     <div class="main">
       <div class="main__nav">
         <div class="nav__container nav__container--center">
@@ -53,8 +53,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data: function() {
     return {
@@ -98,7 +96,7 @@ export default {
       });
     },
     dbgetAccess: function(goAuth) {
-      axios.post('http://localhost:3000/database/auth', {
+      this.axios.post('http://localhost:3000/database/auth', {
         login: this.auth.login,
         password: this.auth.password
       })
@@ -130,6 +128,7 @@ export default {
 </script>
 
 <style lang="scss">
+  @import "~normalize.css";
   @import "../style/sass/main.scss";
   body {
     min-width: 980px;

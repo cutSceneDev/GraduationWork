@@ -60,8 +60,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data: function() {
     return {
@@ -86,9 +84,8 @@ export default {
     },
 
     getTests: function() {
-      //let that = this;
       let quality = 20;
-      axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
+      this.axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
       .then((response) => {
         if (response.data) {
           this.tests = response.data;
@@ -119,7 +116,7 @@ export default {
       } else {
         return;
       }
-      axios.post('http://localhost:3000/database/results', {
+      this.axios.post('http://localhost:3000/database/results', {
         results: this.results,
         userInfo: this.userData
       })

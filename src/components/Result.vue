@@ -17,7 +17,7 @@
             <td class="table__field">{{item.name}}</td>
             <td class="table__field">{{item.total}}</td>
             <td class="table__field">{{item.correct}}</td>
-            <td class="table__field table__field--last">{{item.date_time}}</td>
+            <td class="table__field table__field--last">{{item.date_time | format}}</td>
           </tr>
         </table>
       </div>
@@ -26,8 +26,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   data: function() {
     return {
@@ -41,7 +39,7 @@ export default {
     },
     getStat: function() {
       let that = this;
-      axios.get('http://localhost:3000/database/stat')
+      this.axios.get('http://localhost:3000/database/stat')
       .then(function (response) {
         that.results = response.data.reverse();
         if (that.results.length > 50) {
@@ -51,6 +49,14 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+    testTime: function() {
+      console.log(new Date());
+    }
+  },
+  filters: {
+    format: function(time) {
+      return time;
     }
   },
   mounted: function() {

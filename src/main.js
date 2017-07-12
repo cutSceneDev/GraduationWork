@@ -1,13 +1,13 @@
 import Vue from 'vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import Store from './store'
 import VueRouter from 'vue-router'
 import { routes, secureRoute } from './routes'
 import Main from './components/Main.vue'
-import Store from './store'
-import VueResource from 'vue-resource'
-import axios from 'axios'
 
+Vue.use(VueAxios, axios)
 Vue.use(VueRouter);
-Vue.use(VueResource);
 
 const router = new VueRouter({
   mode: 'history',
@@ -18,7 +18,6 @@ router.beforeEach(secureRoute);
 
 new Vue({
   el: '#app',
-  axios,
   router,
   render: h => h(Main)
 })
