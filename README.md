@@ -1,18 +1,11 @@
-# student_tester
+# Student_Tester_front
+front SPA with Vue.js
 
-> A Vue.js project
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+1. clone rep to your computer:
+       => git clone https://github.com/cutSceneDev/Student_Tester_front.git
+2. enter folder:
+       => cd student_tester_front
+3. install packages:
+       => npm install
+4. start server:
+       => npm run dev
