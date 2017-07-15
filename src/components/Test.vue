@@ -47,10 +47,10 @@
         </div>
       </div>
       <div class="task__finish">
-        <button @click="finishTest()" :class="'finish__text ' + finishClass">Закончить Тест</button>
-        <button @click="show()">testsObject</button>
-        <button @click="sho()">eventPopup</button>
-        <button @click="sh()">complateTests</button>
+        <button @click="finishTest()" class="finish__text" :class="{'disabled': testInProcess}">Закончить Тест</button>
+        <button @click="test1()">testsObject</button>
+        <button @click="test2()">eventPopup</button>
+        <button @click="test3()">complateTests</button>
       </div>
     </div>
     <div>
@@ -71,19 +71,19 @@ export default {
   },
 
   methods: {
-    show: function() {
+    test1() {
       console.log(this.results);
     },
-    sho: function() {
+    test2() {
       this.$emit('showResult', {total: 30, correct: 10, wrong: 20});
     },
-    sh: function() {
+    test3() {
       for (let el in this.results) {
         this.results[el].answer = 1;
       }
     },
 
-    getTests: function() {
+    getTests() {
       let quality = 20;
       this.axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
       .then((response) => {
@@ -102,20 +102,12 @@ export default {
         console.log(error);
       });
     },
-    changeQuestion: function(number) {
+    changeQuestion(number) {
       if (number > this.results.length - 1 || number < 0) return;
       this.activeTest = number;
     },
-    finishTest: function() {
-      if (this.results && this.userData) {
-        for (let el in this.results) {
-          if (this.results[el].answer === 0) {
-            return;
-          }
-        }
-      } else {
-        return;
-      }
+    finishTest() {
+      if (this.testInProcess) return;
       this.axios.post('http://localhost:3000/database/results', {
         results: this.results,
         userInfo: this.userData
@@ -127,37 +119,33 @@ export default {
         console.log(error);
       });
     },
-    showResult: function(res) {
+    showResult(res) {
       this.$emit('showResult', res);
     }
   },
 
   computed: {
-    activeTotal: function() {
+    activeTotal() {
       return `${this.activeTest + 1} / ${this.results.length}`
     },
-    currentTest: function() {
+    currentTest() {
       return this.tests[this.activeTest] || this.tests.temp;
     },
-    classChanger: function(index) {
-      if (this.results[index]) return 'divGreen';
-      return 'divRed';
-    },
-    finishClass: function() {
-      for (let el in this.results) {
-        if (this.results[el].answer === 0) return 'unactive';
+    testInProcess() {
+      for (let el of this.results) {
+        if (el.answer === 0) return true;
       }
-      return '';
+      return false;
     }
   },
 
   filters: {
-    upperCase: function(str) {
+    upperCase(str) {
       return str[0].toUpperCase() + str.slice(1);
     }
   },
 
-  mounted: function() {
+  mounted() {
     this.getTests();
   },
 
@@ -189,7 +177,7 @@ export default {
       border-color: $orange;
     }
   }
-  .unactive {
+  .disabled {
     cursor: not-allowed;
     &:hover {
       color: $blue;
