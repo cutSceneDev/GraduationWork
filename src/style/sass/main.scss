@@ -23,7 +23,6 @@ $dgrey: #666;
   box-shadow: 3px 3px 15px $black;
   text-decoration: none;
   outline: none;
-  cursor: pointer;
 }
 
 @mixin mainButton() {
@@ -58,7 +57,6 @@ $dgrey: #666;
   color: $grey;
   border-radius: 5px;
   text-decoration: none;
-  font-family: "Georgia", "Times New Roman", serif;
   cursor: pointer;
   outline: none;
 
@@ -76,7 +74,7 @@ $dgrey: #666;
   border: 2px solid $black;
   padding: 8px 15px;
 
-  background: $grey;
+  background: $white;
   color: $black;
   border-radius: 5px;
   outline: none;

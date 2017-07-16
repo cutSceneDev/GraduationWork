@@ -169,7 +169,7 @@ export default {
   }
   button,
   input {
-    font-family: "Verdana", "Arial", sans-serif;
+    font-family: "Verdana", "Arial", serif;
   }
   .main__nav {
     background-color: black;

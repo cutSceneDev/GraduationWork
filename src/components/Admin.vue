@@ -10,7 +10,7 @@
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
   @import "../style/sass/main.scss";
 
   .admin__content {

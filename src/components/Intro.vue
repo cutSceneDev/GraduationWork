@@ -54,7 +54,7 @@
           </table>
         </div>
       </div>
-      <router-link class="intro__login" to='/login' tag="button">Регистрация</router-link>
+      <router-link class="intro__login" :to="{name: 'login'}" tag="button">Регистрация</router-link>
     </div>
 </template>
 

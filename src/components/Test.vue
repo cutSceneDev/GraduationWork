@@ -1,12 +1,12 @@
-<template charset='utf-8'>
+<template>
   <div class="test">
     <div class="test__content" v-if="this.tests">
       <div class="content__status">
         <div v-for="(item, index) in results"
           class="status__item"
-          :class=" index === activeTest ?
-            'blue' : results[index].answer ?
-            'green' : 'orange' "
+          :class="index === activeTest ?
+            'blue' : item.answer ?
+            'green' : 'orange'"
           @click="changeQuestion(index)"
         >{{index + 1}}</div>
       </div>
@@ -233,12 +233,15 @@ export default {
     width: 600px;
   }
   .task__quest {
-    margin: 4px 15px 15px 15px;
-    border: 2px solid $orange;
+    @include testElem;
+    margin: 5px 15px 25px 15px;
+    border: none;
 
-    background: $grey;
-    color: $black;
-    border-radius: 5px;
+    border-radius: 15px;
+    cursor: default;
+    &:hover {
+      border: none;
+    }
   }
   .quest__text {
     display: block;
@@ -258,21 +261,19 @@ export default {
     @include testElem;
   }
   .label__radio:checked + .label__span {
-    border-color: $green;
+    background-color: $green;
   }
   .task__move {
     display: flex;
     justify-content: space-around;
     flex-flow: row nowrap;
-    margin: 5px 25px;
+    margin: 0 30px;
   }
   .move__back,
   .move__forward {
-    @include testElem;
-    padding: 10px 15px;
-
-    font-weight: bold;
-    text-align: center;
+    @include navButton;
+    margin: 0 0 15px 0;
+    padding: 10px 25px;
     border-radius: 15px;
     text-transform: uppercase;
   }

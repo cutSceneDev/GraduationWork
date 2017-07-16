@@ -11,7 +11,7 @@
         <label class="reg__text-name form-label" for="name-input">Введите свое имя и фамилию:</label>
         <input class="reg__name form-input" id="name-input" placeholder="Иван Громов" v-model="form.name">
       </div>
-      <button class="login__test" v-on:click="createUser">Начать тестирование</button>
+      <button class="login__test" @click="createUser">Начать тестирование</button>
     </div>
     <div>
       <router-view></router-view>
