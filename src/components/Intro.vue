@@ -1,17 +1,20 @@
 <template>
     <div class="intro">
       <div class="intro__content">
-        <div class="content__lBar">
-          <h2 class="lBar__title">Информация</h2>
-          <p class="lBar__p">Данный сайт создан в образовательных целях для тестирования знаний учащихся в НМетАУ. Любой пользователь сайта имеет возможность ввести информацию о себе, после чего пройти определенное количество вопросов для оценивания знаний. По окончанию теста вы сможете увидеть количество правильных ответов и рекомендованную автоматически рассчитанную оценку на основе предложенной системы оценивания.</p>
-          <p class="lBar__head">Руководитель сайта: Евтушенко Галина Львовна</p>
-          <a class="lBar__dev" href="https://github.com/cutSceneDev">Создатель сайта: Решетников Артур Александорович</a>
+        <div class="content__left">
+          <h2 class="left__title">Информация</h2>
+          <p class="left__text bar-content">Данный сайт создан в образовательных целях для тестирования знаний учащихся в НМетАУ. Любой пользователь сайта имеет возможность ввести информацию о себе, после чего пройти определенное количество вопросов для оценивания знаний. По окончанию теста вы сможете увидеть количество правильных ответов и рекомендованную автоматически рассчитанную оценку на основе предложенной системы оценивания.</p>
+          <p class="left__exec bar-content orange">Руководитель сайта: Евтушенко Галина Львовна</p>
+          <p class="bar-content left__dev"><a class="orange"
+            href="https://github.com/cutSceneDev"
+            >Создатель сайта: Решетников Артур Александорович</a
+          ></p>
         </div>
-        <div class="content__rBar">
-          <h2 class="rBar__title">Тестирование</h2>
-          <p class="rBar__p">Тестирование по предметам состоит из 30 вопросов. Каждый вопрос имеет 4 варианта ответа, из которых только один правильный.</p>
-          <p class="rBar__p">Критерий оценивания по количеству правильных ответов:</p>
-          <table class="rBar__table rBar__table--center">
+        <div class="content__right">
+          <h2 class="right__title">Тестирование</h2>
+          <p class="right__text bar-content">Тестирование по предметам состоит из 30 вопросов. Каждый вопрос имеет 4 варианта ответа, из которых только один правильный.</p>
+          <p class="right__text bar-content">Критерий оценивания по количеству правильных ответов:</p>
+          <table class="right__table orange">
             <tr class="table__title">
               <td>РЕЗУЛЬТАТ</td>
               <td>ОЦЕНКА</td>
@@ -51,21 +54,12 @@
           </table>
         </div>
       </div>
-      <router-link class="intro__login intro__login--center" to='/login'>Регистрация</router-link>
+      <router-link class="intro__login" to='/login' tag="button">Регистрация</router-link>
     </div>
 </template>
 
 <script>
-export default {
-  data: function() {
-    return {
-
-    }
-  },
-  methods: {
-
-  }
-}
+export default {}
 </script>
 
 <style lang="scss" scoped>
@@ -77,48 +71,33 @@ export default {
     justify-content: space-between;
     align-items: flex-start;
   }
-  .content__lBar,
-  .content__rBar {
-    flex-basis: 380px;
-    margin-bottom: 30px;
-    border: 2px solid $grey;
-
-    border-radius: 15px;
-    color: $grey;
-    background-color: #000000;
-    box-shadow: 3px 3px 15px #000000;
+  .content__left,
+  .content__right {
+    @include basicWindow;
+    flex-basis: 50%;
   }
-  .lBar__title,
-  .rBar__title {
+  .content__left {
+    margin-right: 30px;
+  }
+  .left__title,
+  .right__title {
     margin: 15px 0;
     text-align: center;
     color: $blue;
   }
-  .lBar__p,
-  .lBar__head,
-  .lBar__dev,
-  .rBar__p {
-    margin: 0 15px;
-    margin-bottom: 15px;
+  .bar-content {
+    margin: 10px 15px;
   }
-  .lBar__dev {
-    margin-bottom: 25px;
-  }
-  .lBar__head,
-  .lBar__dev,
-  .lBar__dev:visited {
-    display: block;
-    color: $orange;
-  }
-  .rBar__table {
-    margin-left: 30px;
+  .left__dev {
     margin-bottom: 20px;
-    color: $orange;
-    &--center {
-      @include center;
-    }
   }
-  .rBar__table td {
+  .orange {
+    color: $orange;
+  }
+  .right__table {
+    margin: 20px auto;
+  }
+  .right__table td {
     text-align: center;
     padding: 1px 15px;
   }
@@ -126,25 +105,6 @@ export default {
     text-decoration: underline;
   }
   .intro__login {
-    display: block;
-    padding: 10px 15px;
-    margin-bottom: 45px;
-    width: 350px;
-    text-align: center;
-    border-radius: 15px;
-    border: 2px solid $grey;
-    background-color: black;
-    text-decoration: none;
-    box-shadow: 2px 2px 5px black;
-    color: $blue;
-    text-transform: uppercase;
-    outline: none;
-    &:hover {
-      color: $orange;
-      border: 2px solid $orange;
-    }
-    &--center {
-      @include center;
-    }
+    @include mainButton;
   }
 </style>

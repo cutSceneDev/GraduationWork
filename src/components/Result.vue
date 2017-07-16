@@ -27,17 +27,17 @@
 
 <script>
 export default {
-  data: function() {
+  data() {
     return {
       results: ''
     }
   },
 
   methods: {
-    show: function() {
+    show() {
       console.log(this.results);
     },
-    getStat: function() {
+    getStat() {
       let that = this;
       this.axios.get('http://localhost:3000/database/stat')
       .then(function (response) {
@@ -50,16 +50,16 @@ export default {
         console.log(error);
       });
     },
-    testTime: function() {
+    testTime() {
       console.log(new Date());
     }
   },
   filters: {
-    format: function(time) {
+    format(time) {
       return time;
     }
   },
-  mounted: function() {
+  mounted() {
     this.getStat();
   }
 }

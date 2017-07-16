@@ -1,9 +1,3 @@
-// MIXINS
-@mixin center() {
-    margin-left: auto;
-    margin-right: auto;
-}
-
 //  COLORS
 $grey: #d4d4d4;
 $orange: #e35724;
@@ -16,3 +10,81 @@ $white: #ffffff;
 $dgreen: #228B22;
 $dred: #8B0000;
 $dblue: #4169e1;
+$dgrey: #666;
+
+// MIXINS
+@mixin basicWindow() {
+  margin-bottom: 30px;
+  border: 2px solid $grey;
+
+  border-radius: 15px;
+  color: $white;
+  background-color: $black;
+  box-shadow: 3px 3px 15px $black;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+}
+
+@mixin mainButton() {
+  @include basicWindow;
+  display: block;
+  margin: 0 auto;
+  padding: 10px 120px;
+  margin-bottom: 50px;
+
+  text-align: center;
+  text-decoration: none;
+  color: $blue;
+  text-transform: uppercase;
+  outline: none;
+  cursor: pointer;
+  &:hover {
+    color: $orange;
+    border-color: $orange;
+  }
+}
+
+@mixin navButton() {
+  padding: 10px 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  white-space: nowrap;
+  border: 1px solid $grey;
+  font-size: 16px;
+
+  background-color: $dgrey;
+  color: $grey;
+  border-radius: 5px;
+  text-decoration: none;
+  font-family: "Georgia", "Times New Roman", serif;
+  cursor: pointer;
+  outline: none;
+
+  &:hover,
+  &--active:focus {
+    border: 1px solid $black;
+    color: $black;
+    background-color: $orange;
+  };
+}
+
+@mixin testElem() {
+  display: block;
+  margin-bottom: 10px;
+  border: 2px solid $black;
+  padding: 8px 15px;
+
+  background: $grey;
+  color: $black;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  font-family: "Verdana", serif;
+  font-size: 16px;
+  text-decoration: none;
+  &:hover {
+    border-color: $blue;
+  }
+}

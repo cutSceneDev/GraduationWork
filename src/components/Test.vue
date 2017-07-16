@@ -1,56 +1,70 @@
 <template charset='utf-8'>
   <div class="test">
-    <div class="test__content">
+    <div class="test__content" v-if="this.tests">
       <div class="content__status">
         <div v-for="(item, index) in results"
-        class="status__item"
-        :class=" index === activeTest ?
-         'blue' : results[index].answer ?
-         'green' : 'orange' "
-        @click="changeQuestion(index)">
-        {{index + 1}}
-      </div>
+          class="status__item"
+          :class=" index === activeTest ?
+            'blue' : results[index].answer ?
+            'green' : 'orange' "
+          @click="changeQuestion(index)"
+        >{{index + 1}}</div>
       </div>
       <div class="content__task">
         <div class="task__number">
           <span class="number__current">{{activeTotal}}</span>
         </div>
         <div class="task__quest">
-          <span class="quest__text">{{currentTest.question | upperCase}}</span>
+          <span class="quest__text">{{currentTest.question | firstCapital}}</span>
         </div>
         <div class="task__answer">
           <label style="display:none">
-            <input name="answer" type="radio" value="0" v-model="results[activeTest].answer">
+            <input name="answer" type="radio" value="0"
+              v-model="results[activeTest].answer">
             <span class="label__span">--Не выбран--</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="1" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer1 | upperCase}}</span>
+            <input class="label__radio" name="answer" type="radio" value="1"
+              v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer1 | firstCapital}}</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="2" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer2 | upperCase}}</span>
+            <input class="label__radio" name="answer" type="radio" value="2"
+              v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer2 | firstCapital}}</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="3" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer3 | upperCase}}</span>
+            <input class="label__radio" name="answer" type="radio" value="3"
+              v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer3 | firstCapital}}</span>
           </label>
           <label class="answer__label">
-            <input class="label__radio" name="answer" type="radio" value="4" v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer4 | upperCase}}</span>
+            <input class="label__radio" name="answer" type="radio" value="4"
+              v-model="results[activeTest].answer">
+            <span class="label__span">{{currentTest.answer4 | firstCapital}}</span>
           </label>
 
         </div>
         <div class="task__move">
-          <button class="move__back" @click="changeQuestion(activeTest - 1)">Предыдущий вопрос</button>
-          <button class="move__forward" @click="changeQuestion(activeTest + 1)">Следующий вопрос</button>
+          <button class="move__back"
+            @click="changeQuestion(activeTest - 1)"
+          >Предыдущий вопрос</button>
+          <button class="move__forward"
+            @click="changeQuestion(activeTest + 1)"
+          >Следующий вопрос</button>
         </div>
       </div>
       <div class="task__finish">
-        <button @click="finishTest()" class="finish__text" :class="{'disabled': testInProcess}">Закончить Тест</button>
-        <button @click="test1()">testsObject</button>
-        <button @click="test2()">eventPopup</button>
-        <button @click="test3()">complateTests</button>
+        <button @click="finishTest()"
+          class="finish__text"
+          :class="{'disabled': testInProcess}"
+        >Закончить Тест</button>
+        <button @click="dev_complate()">complateTests</button>
+      </div>
+    </div>
+    <div class="test__await" v-if="!this.tests">
+      <div class="await__popup">
+        <p>Testing is loading...</p>
       </div>
     </div>
     <div>
@@ -63,7 +77,7 @@
 export default {
   data: function() {
     return {
-      tests: {},
+      tests: null,
       results: [],
       activeTest: 0,
       userInfo: ''
@@ -71,21 +85,15 @@ export default {
   },
 
   methods: {
-    test1() {
-      console.log(this.results);
-    },
-    test2() {
-      this.$emit('showResult', {total: 30, correct: 10, wrong: 20});
-    },
-    test3() {
+    dev_complate() {
       for (let el in this.results) {
         this.results[el].answer = 1;
       }
     },
 
     getTests() {
-      let quality = 20;
-      this.axios.get(`http://localhost:3000/database/tests?qua=${quality}`)
+      let quantity = 20;
+      this.axios.get(`http://localhost:3000/database/tests?qua=${quantity}`)
       .then((response) => {
         if (response.data) {
           this.tests = response.data;
@@ -126,7 +134,7 @@ export default {
 
   computed: {
     activeTotal() {
-      return `${this.activeTest + 1} / ${this.results.length}`
+      return this.activeTest + 1 + '/' + this.results.length;
     },
     currentTest() {
       return this.tests[this.activeTest] || this.tests.temp;
@@ -140,7 +148,7 @@ export default {
   },
 
   filters: {
-    upperCase(str) {
+    firstCapital(str) {
       return str[0].toUpperCase() + str.slice(1);
     }
   },
@@ -153,29 +161,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import "../style/sass/main.scss";
 
-  .finish__text {
-    display: block;
-    padding: 10px 15px;
-    margin-bottom: 45px;
-    width: 380px;
-    text-align: center;
-    border-radius: 15px;
-    border: 2px solid $grey;
-
-    background-color: black;
-    text-decoration: none;
-    box-shadow: 2px 2px 5px black;
+  .await__popup {
+    @include basicWindow;
     color: $blue;
-    text-transform: uppercase;
-    outline: none;
-    cursor: pointer;
-    &:hover {
-      color: $orange;
-      border-color: $orange;
-    }
+    text-align: center;
+  }
+  .finish__text {
+    @include mainButton;
   }
   .disabled {
     cursor: not-allowed;
@@ -186,23 +181,21 @@ export default {
   }
   .number__current {
     display: block;
-    text-align: center;
     margin-top: 5px;
-    color: $grey;
-    font-family: "Arila", sans-serif;
-    font-size: 25px;
+    font-size: 22px;
     font-weight: bold;
+
+    text-align: center;
+    color: $grey;
+    font-family: "Verdana", sans-serif;
   }
   .content__status {
+    @include basicWindow;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
-    margin-bottom: 15px;
     padding: 5px 10px;
-    border: 2px solid $grey;
-
-    border-radius: 15px;
-    background-color: $black;
+    color: $black;
   }
   .status__item {
     margin: 2px;
@@ -220,9 +213,11 @@ export default {
   }
   .orange {
     background-color: $orange;
-  } .green {
+  }
+  .green {
     background-color: $green;
-  } .blue {
+  }
+  .blue {
     background-color: $blue;
   }
   .test__content {
@@ -232,29 +227,23 @@ export default {
     align-items: center;
   }
   .content__task {
+    @include basicWindow;
     display: flex;
     flex-flow: column nowrap;
-
     width: 600px;
-    margin-bottom: 30px;
-    border: 2px solid $grey;
-
-    border-radius: 15px;
-    color: $grey;
-    background-color: $black;
-    box-shadow: 3px 3px 15px $black;
   }
   .task__quest {
     margin: 4px 15px 15px 15px;
     border: 2px solid $orange;
+
     background: $grey;
     color: $black;
     border-radius: 5px;
   }
   .quest__text {
     display: block;
-    margin: 10px 15px 10px 15px;
-    font-family: "Arial", serif;
+    margin: 10px 15px;
+    font-family: "Verdana", serif;
   }
   .task__answer {
     display: flex;
@@ -266,59 +255,28 @@ export default {
     display: none;
   }
   .label__span {
-    display: block;
-    margin-bottom: 10px;
-    border: 2px solid $black;
-    padding: 8px 15px;
-
-    background: $grey;
-    color: $black;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: "Arial", serif;
-    &:hover {
-      border-color: $blue;
-    }
+    @include testElem;
   }
   .label__radio:checked + .label__span {
     border-color: $green;
   }
   .task__move {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     flex-flow: row nowrap;
-    margin: 0 15px 20px 15px;
+    margin: 5px 25px;
   }
   .move__back,
   .move__forward {
-    display: block;
+    @include testElem;
     padding: 10px 15px;
-    text-align: center;
-    border: 2px solid $black;
 
-    font-family: "Arial", serif;
     font-weight: bold;
+    text-align: center;
     border-radius: 15px;
-    text-decoration: none;
-    box-shadow: 2px 2px 5px black;
     text-transform: uppercase;
-    outline: none;
-    cursor: pointer;
-
-    &:hover {
-      color: $black;
-      border-color: $blue;
-    }
   }
   .move__back {
-    margin-right: 15px;
-    background-color: $grey;
-    border-color: $black;
-    color: $black;
-  }
-  .move__forward {
-    background-color: $grey;
-    border-color: $black;
-    color: $black;
+    //margin-right: 15px;
   }
 </style>

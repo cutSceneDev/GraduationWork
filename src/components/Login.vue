@@ -2,14 +2,14 @@
   <div class="login">
     <div class="login__content">
       <div class="content__reg">
-        <span class="reg__text-group">Выберите свою группу</span>
-        <select class="reg__group" v-model="form.group">
+        <label class="reg__text-group form-label"for="group" >Выберите свою группу:</label>
+        <select class="reg__group form-input" id="group" v-model="form.group">
           <option value="KN01-13-1">КН01-13-1</option>
           <option value="KN01-13-2">КН01-13-2</option>
           <option value="KN01-13-3">КН01-13-3</option>
         </select>
-        <span class="reg__text-name">Введите свое имя/фамилию</span>
-        <input class="reg__name" placeholder="Иван Громов" v-model="form.name">
+        <label class="reg__text-name form-label" for="name-input">Введите свое имя и фамилию:</label>
+        <input class="reg__name form-input" id="name-input" placeholder="Иван Громов" v-model="form.name">
       </div>
       <button class="login__test" v-on:click="createUser">Начать тестирование</button>
     </div>
@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  data: function() {
+  data() {
     return {
       form: {
         name: 'Artyr Reshetnikov',
@@ -30,7 +30,7 @@ export default {
     }
   },
   methods: {
-    createUser: function() {
+    createUser() {
       if ( this.check(this.form.name) ) {
         //console.log(this.form);
         this.$emit('setUser', this.form);
@@ -39,7 +39,7 @@ export default {
         this.form.name = 'Wrong name, try again!'
       }
     },
-    check: function(name) {
+    check(name) {
       if ( name.split(' ').length != 2 ) return;
         for(let i = 0; i < name.length; i++) {
           let code = name.charCodeAt(i);
@@ -59,59 +59,24 @@ export default {
   @import "../style/sass/main.scss";
 
   .login__content {
-    display: flex;
-    justify-content: flex-start;
-    flex-flow: column nowrap;
-    align-items: center;
+
   }
   .content__reg {
-    display: flex;
-    flex-flow: column nowrap;
-
-    width: 380px;
-    margin-bottom: 30px;
-    border: 2px solid $grey;
-
-    border-radius: 15px;
-    color: $grey;
-    background-color: #000000;
-    box-shadow: 3px 3px 15px #000000;
+    margin: 30px auto;
+    @include basicWindow;
+    width: 320px;
+    padding: 10px 50px 10px 20px;
   }
-  .reg__text-group {
-    margin: 20px 15px 5px 15px;
+  .form-label,
+  .form-input {
+    width: 100%;
+    margin: 5px 0;
+    display: block;
   }
-  .reg__group {
-    margin: 0px 15px 20px 15px;
-  }
-  .reg__text-name {
-    margin: 0px 15px 5px 15px;
-  }
-  .reg__name {
-    margin: 0px 15px 25px 15px;
+  .form-input {
+    margin-bottom: 15px;
   }
   .login__test {
-    display: block;
-    padding: 10px 15px;
-    margin-bottom: 45px;
-    width: 380px;
-    text-align: center;
-    border-radius: 15px;
-    border: 2px solid $grey;
-
-    background-color: black;
-    text-decoration: none;
-    box-shadow: 2px 2px 5px black;
-    color: $blue;
-    text-transform: uppercase;
-    outline: none;
-    cursor: pointer;
-
-    &:hover {
-      color: $orange;
-      border: 2px solid $orange;
-    }
-    &--center {
-      @include center;
-    }
+    @include mainButton;
   }
 </style>

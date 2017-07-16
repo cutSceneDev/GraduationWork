@@ -14,13 +14,8 @@
   @import "../style/sass/main.scss";
 
   .admin__content {
-    margin-bottom: 30px;
-    border: 2px solid $grey;
-
-    text-align: center;
-    border-radius: 15px;
+    @include basicWindow;
     color: $blue;
-    background-color: #000000;
-    box-shadow: 3px 3px 15px #000000;
+    text-align: center;
   }
 </style>

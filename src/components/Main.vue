@@ -1,28 +1,49 @@
 ﻿<template>
     <div class="main">
       <div class="main__nav">
-        <div class="nav__container nav__container--center">
+        <div class="nav__container">
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
             <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
             <router-link class="list__key" to='/'>Главная</router-link>
             <router-link class="list__key" to='/result'>Результаты</router-link>
-            <button class="list__key list__key--active" @click.prevent="popupShow('admin')">Админ панель</button>
+            <button class="list__key list__key--active"
+              @click.prevent="popupShow('admin')"
+            >Админ панель</button>
           </div>
         </div>
       <div class="nav__popup">
-        <div class="popup__back" v-if="popups.result || popups.about || popups.admin " @click="popupHide()"></div>
+        <div class="popup__back"
+          v-if="popups.result || popups.about || popups.admin "
+          @click="popupHide()"
+        ></div>
         <div class="popup__result" v-if="popups.result">
           <h2 class="result__title">Результаты тестирования:</h2>
-          <p class="result__text">Группа: <span class="result__group">{{userData.group}}</span></p>
-          <p class="result__text">Имя: <span class="result__name">{{userData.name}}</span></p>
-          <p class="result__text">Всего вопросов: <span class="result__total">{{userData.total}}</span></p>
-          <p class="result__text">Правильно: <span class="result__correct">{{userData.correct}}</span></p>
-          <p class="result__text">Ошибок: <span class="result__wrong">{{userData.wrong}}</span></p>
-          <p class="result__text">Рекомендованная оценка: <span class="result__mark">{{userData.mark}}</span></p>
+          <p class="result__text">Группа:
+            <span class="result__group">{{userData.group}}</span>
+          </p>
+          <p class="result__text">Имя:
+            <span class="result__name">{{userData.name}}</span>
+          </p>
+          <p class="result__text">Всего вопросов:
+            <span class="result__total">{{userData.total}}</span>
+          </p>
+          <p class="result__text">Правильно:
+            <span class="result__correct">{{userData.correct}}</span>
+          </p>
+          <p class="result__text">Ошибок:
+            <span class="result__wrong">{{userData.wrong}}</span>
+          </p>
+          <p class="result__text">Рекомендованная оценка:
+            <span class="result__mark">{{userData.mark}}</span>
+          </p>
           <div class="result__buttons">
-            <button class="list__key" @click="changeComponent('main')">Главная</button>
-            <button class="list__key" @click="changeComponent('result')">Результаты</button>
+            <button class="list__key"
+              @click="changeComponent('main')"
+            >Главная</button>
+            <button class="list__key"
+              @click="changeComponent('result')"
+            >Результаты</button>
           </div>
         </div>
         <div class="popup__about" v-if="popups.about">
@@ -36,17 +57,26 @@
         <div class="popup__admin" v-if="popups.admin">
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
-          <input class="admin__input" id="login" v-model="auth.login" autofocus placeholder="Логин" maxlength="99" value="Artyr" type="text">
+          <input class="admin__input" id="login"
+            v-model="auth.login" autofocus placeholder="Логин"
+            maxlength="99" value="Artyr" type="text">
           <label class="admin__label" for="pass">Введите Пароль:</label>
-          <input class="admin__input" id="pass" v-model="auth.password" type="password" placeholder="Пароль" maxlength="14">
+          <input class="admin__input" id="pass"
+            v-model="auth.password" type="password"
+            placeholder="Пароль" maxlength="14">
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
-          <button class="admin__button" @click="loginUser('admin')">Войти</button>
+          <button class="admin__button"
+            @click="loginUser('admin')"
+          >Войти</button>
         </div>
       </div>
       </div>
       <div class="main__router">
-        <div class="router router--center">
-          <router-view @setUser="setUserInfo" @showResult="showResult" :userData="userData"></router-view>
+        <div class="router">
+          <router-view @setUser="setUserInfo"
+            @showResult="showResult"
+            :userData="userData"
+          ></router-view>
         </div>
       </div>
     </div>
@@ -54,7 +84,7 @@
 
 <script>
 export default {
-  data: function() {
+  data() {
     return {
       popups: {
         result: false,
@@ -71,21 +101,21 @@ export default {
   },
 
   methods: {
-    showResult: function(resultData) {
+    showResult(resultData) {
       if (!resultData) return;
       this.setUserResult(resultData);
       this.popupShow('result');
     },
-    popupShow: function(popup) {
+    popupShow(popup) {
       this.popups[popup] = true;
     },
-    popupHide: function(comp) {
+    popupHide(comp) {
       this.popups.admin = this.popups.about = false;
       if (comp === 'result' || comp === 'main') {
         this.popups.result = false;
       }
     },
-    loginUser: function(user) {
+    loginUser(user) {
       this.dbgetAccess( (acces) => {
         if (!acces) {
           this.popups.wrong = true;
@@ -95,7 +125,7 @@ export default {
         this.changeComponent(user)
       });
     },
-    dbgetAccess: function(goAuth) {
+    dbgetAccess(goAuth) {
       this.axios.post('http://localhost:3000/database/auth', {
         login: this.auth.login,
         password: this.auth.password
@@ -107,19 +137,19 @@ export default {
         console.log(error);
       });
     },
-    setUserInfo: function(info) {
+    setUserInfo(info) {
       if(!info) return;
       this.userData.name = info.name;
       this.userData.group = info.group;
     },
-    setUserResult: function(results) {
+    setUserResult(results) {
       if(!results) return;
       this.userData.total = results.total;
       this.userData.correct = results.correct;
       this.userData.wrong = results.wrong;
       this.userData.mark = results.mark;
     },
-    changeComponent: function(comp) {
+    changeComponent(comp) {
       this.popupHide(comp);
       this.$router.push({name: comp, params: {access: true}});
     }
@@ -146,18 +176,16 @@ export default {
     margin-bottom: 30px;
   }
   .nav__container {
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 980px;
-    &--center{
-      @include center;
-    }
   }
   .container__title {
+    margin: 15px 100px 15px 15px;
     white-space: nowrap;
     color: $blue;
-    margin: 15px 100px 15px 15px;
   }
   .container__list {
     display: flex;
@@ -165,28 +193,7 @@ export default {
     margin-right: 15px;
   }
   .list__key {
-    padding: 10px 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    margin-left: 15px;
-    white-space: nowrap;
-    border: 1px solid #999;
-    font-size: 16px;
-
-    background-color: #666;
-    color: $grey;
-    border-radius: 5px;
-    text-decoration: none;
-    font-family: "Georgia", "Times New Roman", serif;
-    cursor: pointer;
-    outline: none;
-
-    &:hover,
-    &--active:focus {
-      border: 1px solid black;
-      color: black;
-      background-color: $orange;
-    };
+    @include navButton;
   }
   .popup__back {
     top: 0;
@@ -194,27 +201,20 @@ export default {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
     z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
   }
   .popup__result,
   .popup__about,
   .popup__admin {
+    @include basicWindow;
     position: absolute;
     top: 120px;
     left: 50%;
     right: 50%;
-    margin-left: -190px;
+    margin-left: -200px;
     z-index: 10;
     width: 400px;
-    border: 2px solid $grey;
-    border-radius: 15px;
-
-    background-color: black;
-    color: $grey;
-  }
-  .popup__result {
-
   }
   .result__text {
     margin: 20px 20px 15px 15px;;
@@ -255,16 +255,17 @@ export default {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: flex-start;
+    padding: 0 15px;
   }
   .admin__label {
     margin-bottom: 5px;
-    width: 65%;
-    font-size: 18px;
+    width: 80%;
+    font-size: 16px;
   }
   .admin__input {
-    width: 65%;
-    padding: 5px 10px;
+    width: 80%;
     margin-bottom: 15px;
+    padding: 4px;
     &:focus {
       outline-color: $orange;
     }
@@ -278,27 +279,12 @@ export default {
     color: red;
   }
   .admin__button {
-    display: block;
+    @include navButton;
     margin: 15px 0;
-    padding: 5px 35px;
-    border: 2px solid #999;
-
-    font-weight: bold;
-    border-radius: 5px;
-    color: $grey;
-    background-color: #666;
-    outline: none;
-    cursor: pointer;
-
-    &:hover {
-      color: $orange;
-      border: 2px solid $orange;
-    }
+    padding: 10px 35px;
   }
   .router {
+    margin: 0 auto;
     width: 800px;
-    &--center{
-      @include center;
-    }
   }
 </style>
