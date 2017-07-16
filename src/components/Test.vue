@@ -276,7 +276,4 @@ export default {
     border-radius: 15px;
     text-transform: uppercase;
   }
-  .move__back {
-    //margin-right: 15px;
-  }
 </style>
