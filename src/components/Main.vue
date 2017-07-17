@@ -39,10 +39,10 @@
           </p>
           <div class="result__buttons">
             <button class="list__key"
-              @click="changeComponent('main')"
+              @click="changeComp('main')"
             >Главная</button>
             <button class="list__key"
-              @click="changeComponent('result')"
+              @click="changeComp('result')"
             >Результаты</button>
           </div>
         </div>
@@ -58,15 +58,15 @@
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
           <input class="admin__input" id="login"
-            v-model="auth.login" autofocus placeholder="Логин"
+            v-model="formData.login" autofocus placeholder="Логин"
             maxlength="99" value="Artyr" type="text">
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass"
-            v-model="auth.password" type="password"
+            v-model="formData.password" type="password"
             placeholder="Пароль" maxlength="14">
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
           <button class="admin__button"
-            @click="loginUser('admin')"
+            @click="verifyLogin('admin')"
           >Войти</button>
         </div>
       </div>
@@ -92,7 +92,16 @@ export default {
         admin: false,
         wrong: false
       },
-      auth: {
+      userData: {
+        info: {
+          name: '',
+          group: ''
+        },
+        result: {
+
+        }
+      },
+      formData: {
         login: 'Artyr',
         password: 'pass'
       },
@@ -115,25 +124,20 @@ export default {
         this.popups.result = false;
       }
     },
-    loginUser(user) {
-      this.dbgetAccess( (acces) => {
-        if (!acces) {
-          this.popups.wrong = true;
-          return;
-        }
-        this.popups.wrong = false;
-        this.changeComponent(user)
-      });
-    },
-    dbgetAccess(goAuth) {
+    verifyLogin(user) {
       this.axios.post('http://localhost:3000/database/auth', {
-        login: this.auth.login,
-        password: this.auth.password
+        login: this.formData.login,
+        password: this.formData.password
       })
-      .then(function (response) {
-        goAuth(response.data);
+      .then( (response) => {
+        if (response.data === true) {
+          this.popups.wrong = false;
+          this.changeComp(user)
+        } else {
+          this.popups.wrong = true;
+        }
       })
-      .catch(function (error) {
+      .catch( (error) => {
         console.log(error);
       });
     },
@@ -149,7 +153,7 @@ export default {
       this.userData.wrong = results.wrong;
       this.userData.mark = results.mark;
     },
-    changeComponent(comp) {
+    changeComp(comp) {
       this.popupHide(comp);
       this.$router.push({name: comp, params: {access: true}});
     }

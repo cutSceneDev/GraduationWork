@@ -1,8 +1,8 @@
 <template>
   <div class="test">
-    <div class="test__content" v-if="this.tests">
+    <div class="test__content" v-if="this.dataReady">
       <div class="content__status">
-        <div v-for="(item, index) in results"
+        <div v-for="(item, index) in questData"
           class="status__item"
           :class="index === activeTest ?
             'blue' : item.answer ?
@@ -15,33 +15,33 @@
           <span class="number__current">{{activeTotal}}</span>
         </div>
         <div class="task__quest">
-          <span class="quest__text">{{currentTest.question | firstCapital}}</span>
+          <span class="quest__text">{{currentTest.question}}</span>
         </div>
         <div class="task__answer">
           <label style="display:none">
             <input name="answer" type="radio" value="0"
-              v-model="results[activeTest].answer">
+              v-model="questData[activeTest].answer">
             <span class="label__span">--Не выбран--</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="1"
-              v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer1 | firstCapital}}</span>
+              v-model="questData[activeTest].answer">
+            <span class="label__span">{{currentTest.answer1}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="2"
-              v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer2 | firstCapital}}</span>
+              v-model="questData[activeTest].answer">
+            <span class="label__span">{{currentTest.answer2}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="3"
-              v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer3 | firstCapital}}</span>
+              v-model="questData[activeTest].answer">
+            <span class="label__span">{{currentTest.answer3}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="4"
-              v-model="results[activeTest].answer">
-            <span class="label__span">{{currentTest.answer4 | firstCapital}}</span>
+              v-model="questData[activeTest].answer">
+            <span class="label__span">{{currentTest.answer4}}</span>
           </label>
 
         </div>
@@ -60,9 +60,10 @@
           :class="{'disabled': testInProcess}"
         >Закончить Тест</button>
         <button @click="dev_complate()">complateTests</button>
+        <button @click="dev_logQuestData()">complateTests</button>
       </div>
     </div>
-    <div class="test__await" v-if="!this.tests">
+    <div class="test__await" v-if="!this.dataReady">
       <div class="await__popup">
         <p>Testing is loading...</p>
       </div>
@@ -77,87 +78,81 @@
 export default {
   data: function() {
     return {
-      tests: null,
-      results: [],
       activeTest: 0,
-      userInfo: ''
+      dataReady: false,
+      testInProgress: false,
+      questData: [],
+      userInfo: {
+          name: this.$route.query.name,
+          group: this.$route.query.group
+      }
     }
   },
-
   methods: {
     dev_complate() {
-      for (let el in this.results) {
-        this.results[el].answer = 1;
+      for (let el of this.questData) {
+        el.answer = 1;
       }
     },
+    dev_logQuestData() {
+      console.log(this.questData);
+    },
 
-    getTests() {
-      let quantity = 20;
+    getTestFromDb(quantity) {
       this.axios.get(`http://localhost:3000/database/tests?qua=${quantity}`)
-      .then((response) => {
-        if (response.data) {
-          this.tests = response.data;
-        }
-        if (response.data.length !== this.results.length) {
-          this.results = [];
-          response.data.forEach( (el)=> this.results.push({
-            id : el.id_question,
-            answer : 0
-          }));
+      .then( (response) => {
+        if (!response) throw new Error(response);
+        this.dataReady = true;
+        this.questData = response.data;
+        for (let el of this.questData) {
+          el.answer = 0
         }
       })
-      .catch(function (error) {
+      .catch( (error) => {
         console.log(error);
       });
     },
     changeQuestion(number) {
-      if (number > this.results.length - 1 || number < 0) return;
+      if (number > this.questData.length - 1 || number < 0) return;
       this.activeTest = number;
     },
     finishTest() {
       if (this.testInProcess) return;
       this.axios.post('http://localhost:3000/database/results', {
-        results: this.results,
-        userInfo: this.userData
+        userInfo: this.userInfo,
+        questData: this.questData
       })
-      .then((response) => {
+      .then( (response) => {
         this.showResult(response.data);
       })
-      .catch(function (error) {
+      .catch( (error) => {
         console.log(error);
       });
     },
-    showResult(res) {
-      this.$emit('showResult', res);
+    showResult(info) {
+      this.$emit('showResult', info);
     }
   },
 
   computed: {
     activeTotal() {
-      return this.activeTest + 1 + '/' + this.results.length;
+      return this.activeTest + 1 + '/' + this.questData.length;
     },
     currentTest() {
-      return this.tests[this.activeTest] || this.tests.temp;
+      return this.questData[this.activeTest];
     },
     testInProcess() {
-      for (let el of this.results) {
-        if (el.answer === 0) return true;
-      }
+      console.log('as');
+      for (let el of this.questData) {
+        if (el.question === 0) return true;
+      } 
       return false;
     }
   },
 
-  filters: {
-    firstCapital(str) {
-      return str[0].toUpperCase() + str.slice(1);
-    }
-  },
-
   mounted() {
-    this.getTests();
-  },
-
-  props: ['userData']
+    this.getTestFromDb(20);
+  }
 }
 </script>
 

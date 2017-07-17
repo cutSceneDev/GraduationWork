@@ -2,14 +2,17 @@
   <div class="login">
     <div class="login__content">
       <div class="content__reg">
-        <label class="reg__text-group form-label"for="group" >Выберите свою группу:</label>
-        <select class="reg__group form-input" id="group" v-model="form.group">
+        <label class="reg__text-group form-label" for="group" >Выберите свою группу:</label>
+        <select class="reg__group form-input" id="group" v-model="formData.group">
           <option value="KN01-13-1">КН01-13-1</option>
           <option value="KN01-13-2">КН01-13-2</option>
           <option value="KN01-13-3">КН01-13-3</option>
         </select>
         <label class="reg__text-name form-label" for="name-input">Введите свое имя и фамилию:</label>
-        <input class="reg__name form-input" id="name-input" placeholder="Иван Громов" v-model="form.name">
+        <input class="reg__name form-input" 
+          id="name-input" 
+          placeholder="Иван Громов" 
+          v-model="formData.name">
       </div>
       <button class="login__test" @click="createUser">Начать тестирование</button>
     </div>
@@ -23,7 +26,7 @@
 export default {
   data() {
     return {
-      form: {
+      formData: {
         name: 'Artyr Reshetnikov',
         group: 'KN01-13-3'
       }
@@ -31,12 +34,16 @@ export default {
   },
   methods: {
     createUser() {
-      if ( this.check(this.form.name) ) {
-        //console.log(this.form);
-        this.$emit('setUser', this.form);
-        this.$router.push({name: 'test'});
+      if ( this.check(this.formData.name) ) {
+        this.$router.push({
+          name: 'test',
+          query: {
+            name: this.formData.name,
+            group: this.formData.group
+          }
+           });
       } else {
-        this.form.name = 'Wrong name, try again!'
+        this.formData.name = 'Wrong name, try again!'
       }
     },
     check(name) {
@@ -58,9 +65,6 @@ export default {
 <style lang="scss" scoped>
   @import "../style/sass/main.scss";
 
-  .login__content {
-
-  }
   .content__reg {
     margin: 30px auto;
     @include basicWindow;
