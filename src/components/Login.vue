@@ -9,9 +9,9 @@
           <option value="KN01-13-3">КН01-13-3</option>
         </select>
         <label class="reg__text-name form-label" for="name-input">Введите свое имя и фамилию:</label>
-        <input class="reg__name form-input" 
-          id="name-input" 
-          placeholder="Иван Громов" 
+        <input class="reg__name form-input"
+          id="name-input"
+          placeholder="Иван Громов"
           v-model="formData.name">
       </div>
       <button class="login__test" @click="createUser">Начать тестирование</button>
@@ -68,6 +68,7 @@ export default {
   .content__reg {
     margin: 30px auto;
     @include basicWindow;
+    color: $yellow;
     width: 320px;
     padding: 10px 50px 10px 20px;
   }

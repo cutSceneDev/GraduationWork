@@ -148,10 +148,7 @@ export default {
     },
     setUserResult(results) {
       if(!results) return;
-      this.userData.total = results.total;
-      this.userData.correct = results.correct;
-      this.userData.wrong = results.wrong;
-      this.userData.mark = results.mark;
+      this.userData = results;
     },
     changeComp(comp) {
       this.popupHide(comp);
@@ -225,7 +222,7 @@ export default {
   }
   .result__name,
   .result__group {
-    color: $orange;
+    color: $yellow;
   }
   .result__total {
     color: $blue;
@@ -252,7 +249,7 @@ export default {
   .info__git,
   .info__git:visited {
     text-transform: uppercase;
-    color: $orange;
+    color: $yellow;
   }
   .popup__admin {
     display: flex;
@@ -271,7 +268,7 @@ export default {
     margin-bottom: 15px;
     padding: 4px;
     &:focus {
-      outline-color: $orange;
+      outline-color: $yellow;
     }
   }
   .admin__wrong {

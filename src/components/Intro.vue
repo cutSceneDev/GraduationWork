@@ -92,7 +92,7 @@ export default {}
     margin-bottom: 20px;
   }
   .orange {
-    color: $orange;
+    color: $yellow;
   }
   .right__table {
     margin: 20px auto;

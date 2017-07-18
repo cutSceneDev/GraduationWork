@@ -1,21 +1,22 @@
 //  COLORS
-$grey: #d4d4d4;
-$orange: #e35724;
-$blue: #94c4ff;
+
 $red: #ff0000;
-$yellow: #ffff00;
 $green: #00C70D;
 $black: #000000;
-$white: #ffffff;
-$dgreen: #228B22;
-$dred: #8B0000;
-$dblue: #4169e1;
-$dgrey: #666;
 
+$dwhite: #DCDCDC;
+$yellow: #F4A460;
+$grey: #9C9C9C;
+$white: #F8F8FF;
+$dgrey: #696969;
+$blue: #63B8FF;
+$tgreen: #66CDAA;
+$book: #CDC0B0;
 // MIXINS
 @mixin basicWindow() {
   margin-bottom: 30px;
-  border: 2px solid $grey;
+  border: 2px solid;
+  border-color: $grey;
 
   border-radius: 15px;
   color: $white;
@@ -39,8 +40,8 @@ $dgrey: #666;
   outline: none;
   cursor: pointer;
   &:hover {
-    color: $orange;
-    border-color: $orange;
+    color: $yellow;
+    border-color: $yellow;
   }
 }
 
@@ -50,11 +51,12 @@ $dgrey: #666;
   margin-bottom: 15px;
   margin-left: 15px;
   white-space: nowrap;
-  border: 1px solid $grey;
+  border: 1px solid;
+  border-color: $grey;
   font-size: 16px;
 
   background-color: $dgrey;
-  color: $grey;
+  color: $white;
   border-radius: 5px;
   text-decoration: none;
   cursor: pointer;
@@ -62,19 +64,20 @@ $dgrey: #666;
 
   &:hover,
   &--active:focus {
-    border: 1px solid $black;
+    border-color: inherit;
     color: $black;
-    background-color: $orange;
+    background-color: $yellow;
   };
 }
 
 @mixin testElem() {
   display: block;
   margin-bottom: 10px;
-  border: 2px solid $black;
+  border: 1px solid;
+  border-color: inherit;
   padding: 8px 15px;
 
-  background: $white;
+  background-color: $dwhite;
   color: $black;
   border-radius: 5px;
   outline: none;

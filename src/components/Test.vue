@@ -2,11 +2,11 @@
   <div class="test">
     <div class="test__content" v-if="this.dataReady">
       <div class="content__status">
-        <div v-for="(item, index) in questData"
+        <div v-for="(item, index) in questData.results"
           class="status__item"
           :class="index === activeTest ?
-            'blue' : item.answer ?
-            'green' : 'orange'"
+            'yellow' : item ?
+            'blue' : 'white'"
           @click="changeQuestion(index)"
         >{{index + 1}}</div>
       </div>
@@ -20,27 +20,27 @@
         <div class="task__answer">
           <label style="display:none">
             <input name="answer" type="radio" value="0"
-              v-model="questData[activeTest].answer">
+              v-model="questData.results[activeTest]">
             <span class="label__span">--Не выбран--</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="1"
-              v-model="questData[activeTest].answer">
+              v-model="questData.results[activeTest]">
             <span class="label__span">{{currentTest.answer1}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="2"
-              v-model="questData[activeTest].answer">
+              v-model="questData.results[activeTest]">
             <span class="label__span">{{currentTest.answer2}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="3"
-              v-model="questData[activeTest].answer">
+              v-model="questData.results[activeTest]">
             <span class="label__span">{{currentTest.answer3}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="4"
-              v-model="questData[activeTest].answer">
+              v-model="questData.results[activeTest]">
             <span class="label__span">{{currentTest.answer4}}</span>
           </label>
 
@@ -59,8 +59,8 @@
           class="finish__text"
           :class="{'disabled': testInProcess}"
         >Закончить Тест</button>
-        <button @click="dev_complate()">complateTests</button>
-        <button @click="dev_logQuestData()">complateTests</button>
+        <button @click="dev_complate()">complate</button>
+        <button @click="dev_logQuestData()">log</button>
       </div>
     </div>
     <div class="test__await" v-if="!this.dataReady">
@@ -81,8 +81,11 @@ export default {
       activeTest: 0,
       dataReady: false,
       testInProgress: false,
-      questData: [],
-      userInfo: {
+      questData: {
+        tests: [],
+        results: []
+      },
+      userData: {
           name: this.$route.query.name,
           group: this.$route.query.group
       }
@@ -90,44 +93,49 @@ export default {
   },
   methods: {
     dev_complate() {
-      for (let el of this.questData) {
-        el.answer = 1;
+      for (let el in this.questData.results) {
+        this.questData.results[el] = 1;
       }
     },
     dev_logQuestData() {
-      console.log(this.questData);
+      console.log('questData', this.questData, 'userData', this.userData);
     },
 
     getTestFromDb(quantity) {
       this.axios.get(`http://localhost:3000/database/tests?qua=${quantity}`)
-      .then( (response) => {
-        if (!response) throw new Error(response);
-        this.dataReady = true;
-        this.questData = response.data;
-        for (let el of this.questData) {
-          el.answer = 0
-        }
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          if (!response) throw new Error();
+          else {
+            this.questData.tests = response.data;
+            this.dataReady = true;
+            for (let el in response.data) {
+              this.questData.results.push(0);
+            }
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     changeQuestion(number) {
-      if (number > this.questData.length - 1 || number < 0) return;
+      if (number > this.questData.tests.length - 1 || number < 0) return;
       this.activeTest = number;
+      this.questData.tests[number].color = 'blue';
     },
     finishTest() {
+      console.log(this.testInProcess);
       if (this.testInProcess) return;
       this.axios.post('http://localhost:3000/database/results', {
-        userInfo: this.userInfo,
+        userData: this.userData,
         questData: this.questData
       })
-      .then( (response) => {
-        this.showResult(response.data);
-      })
-      .catch( (error) => {
-        console.log(error);
-      });
+        .then((response) => {
+          if (!response) throw new Error();
+          else this.showResult(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     showResult(info) {
       this.$emit('showResult', info);
@@ -136,16 +144,15 @@ export default {
 
   computed: {
     activeTotal() {
-      return this.activeTest + 1 + '/' + this.questData.length;
+      return this.activeTest + 1 + '/' + this.questData.tests.length;
     },
     currentTest() {
-      return this.questData[this.activeTest];
+      return this.questData.tests[this.activeTest];
     },
     testInProcess() {
-      console.log('as');
-      for (let el of this.questData) {
-        if (el.question === 0) return true;
-      } 
+      for (let result of this.questData.results) {
+        if (result == 0) return true;
+      }
       return false;
     }
   },
@@ -181,7 +188,7 @@ export default {
     font-weight: bold;
 
     text-align: center;
-    color: $grey;
+    color: $yellow;
     font-family: "Verdana", sans-serif;
   }
   .content__status {
@@ -206,14 +213,14 @@ export default {
     font-family: "Arial", sans-serif;
     cursor: pointer;
   }
-  .orange {
-    background-color: $orange;
-  }
-  .green {
-    background-color: $green;
+  .white {
+    background-color: $dwhite;
   }
   .blue {
     background-color: $blue;
+  }
+  .yellow {
+    background-color: $yellow;
   }
   .test__content {
     display: flex;
@@ -256,7 +263,7 @@ export default {
     @include testElem;
   }
   .label__radio:checked + .label__span {
-    background-color: $green;
+    background-color: $yellow;
   }
   .task__move {
     display: flex;
