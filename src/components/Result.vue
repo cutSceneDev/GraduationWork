@@ -34,9 +34,6 @@ export default {
   },
 
   methods: {
-    show() {
-      console.log(this.results);
-    },
     getStat() {
       let that = this;
       this.axios.get('http://localhost:3000/database/stat')
@@ -107,7 +104,7 @@ export default {
     }
   }
   .table__field {
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-right: 1px solid $grey;
     text-align: center;
 

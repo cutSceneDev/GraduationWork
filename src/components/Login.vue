@@ -3,7 +3,7 @@
     <div class="login__content">
       <div class="content__reg">
         <label class="reg__text-group form-label" for="group" >Выберите свою группу:</label>
-        <select class="reg__group form-input" id="group" v-model="formData.group">
+        <select class="reg__group form-input" id="group" v-model="userData.group">
           <option value="KN01-13-1">КН01-13-1</option>
           <option value="KN01-13-2">КН01-13-2</option>
           <option value="KN01-13-3">КН01-13-3</option>
@@ -12,9 +12,9 @@
         <input class="reg__name form-input"
           id="name-input"
           placeholder="Иван Громов"
-          v-model="formData.name">
+          v-model="userData.name">
       </div>
-      <button class="login__test" @click="createUser">Начать тестирование</button>
+      <button class="login__test" @click="regUser">Начать тестирование</button>
     </div>
     <div>
       <router-view></router-view>
@@ -26,27 +26,22 @@
 export default {
   data() {
     return {
-      formData: {
+      userData: {
         name: 'Artyr Reshetnikov',
         group: 'KN01-13-3'
       }
     }
   },
   methods: {
-    createUser() {
-      if ( this.check(this.formData.name) ) {
-        this.$router.push({
-          name: 'test',
-          query: {
-            name: this.formData.name,
-            group: this.formData.group
-          }
-           });
+    regUser() {
+      if ( this.checkName(this.userData.name) ) {
+        this.saveStoreData();
+        this.$router.push( {name: 'test'} );
       } else {
-        this.formData.name = 'Wrong name, try again!'
+        this.userData.name = 'Wrong name, try again!'
       }
     },
-    check(name) {
+    checkName(name) {
       if ( name.split(' ').length != 2 ) return;
         for(let i = 0; i < name.length; i++) {
           let code = name.charCodeAt(i);
@@ -57,6 +52,11 @@ export default {
           }
         }
       return name.toLowerCase();
+    },
+    saveStoreData() {
+      this.$store.commit('saveStoreData', {
+        userData: this.userData
+      });
     }
   }
 }

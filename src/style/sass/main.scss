@@ -1,5 +1,4 @@
 //  COLORS
-
 $red: #ff0000;
 $green: #00C70D;
 $black: #000000;
@@ -12,6 +11,7 @@ $dgrey: #696969;
 $blue: #63B8FF;
 $tgreen: #66CDAA;
 $book: #CDC0B0;
+
 // MIXINS
 @mixin basicWindow() {
   margin-bottom: 30px;
@@ -83,7 +83,6 @@ $book: #CDC0B0;
   outline: none;
   cursor: pointer;
   font-family: "Verdana", serif;
-  font-size: 16px;
   text-decoration: none;
   &:hover {
     border-color: $blue;

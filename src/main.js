@@ -1,12 +1,12 @@
-import Vue from 'vue'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import Store from './store'
-import VueRouter from 'vue-router'
-import { routes, secureRoute } from './routes'
-import Main from './components/Main.vue'
+import Vue from 'vue';
+import axios from 'axios';
+import VueAxios from 'vue-axios';
+import VueRouter from 'vue-router';
+import Main from './Main.vue';
+import { routes, secureRoute } from './routes';
+import { store } from './store/store.js'
 
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, axios);
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -14,10 +14,9 @@ const router = new VueRouter({
   routes
 });
 
-router.beforeEach(secureRoute);
-
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(Main)
-})
+});

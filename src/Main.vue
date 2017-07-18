@@ -20,22 +20,22 @@
         <div class="popup__result" v-if="popups.result">
           <h2 class="result__title">Результаты тестирования:</h2>
           <p class="result__text">Группа:
-            <span class="result__group">{{userData.group}}</span>
+            <span class="result__group">{{resultData.group}}</span>
           </p>
           <p class="result__text">Имя:
-            <span class="result__name">{{userData.name}}</span>
+            <span class="result__name">{{resultData.name}}</span>
           </p>
           <p class="result__text">Всего вопросов:
-            <span class="result__total">{{userData.total}}</span>
+            <span class="result__total">{{resultData.total}}</span>
           </p>
           <p class="result__text">Правильно:
-            <span class="result__correct">{{userData.correct}}</span>
+            <span class="result__correct">{{resultData.correct}}</span>
           </p>
           <p class="result__text">Ошибок:
-            <span class="result__wrong">{{userData.wrong}}</span>
+            <span class="result__wrong">{{resultData.wrong}}</span>
           </p>
           <p class="result__text">Рекомендованная оценка:
-            <span class="result__mark">{{userData.mark}}</span>
+            <span class="result__mark">{{resultData.mark}}</span>
           </p>
           <div class="result__buttons">
             <button class="list__key"
@@ -58,11 +58,11 @@
           <h2 class="admin__title">Вход в панель Администратора</h2>
           <label class="admin__label" for="login">Введите Логин:</label>
           <input class="admin__input" id="login"
-            v-model="formData.login" autofocus placeholder="Логин"
+            v-model="loginData.login" autofocus placeholder="Логин"
             maxlength="99" value="Artyr" type="text">
           <label class="admin__label" for="pass">Введите Пароль:</label>
           <input class="admin__input" id="pass"
-            v-model="formData.password" type="password"
+            v-model="loginData.password" type="password"
             placeholder="Пароль" maxlength="14">
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
           <button class="admin__button"
@@ -73,10 +73,7 @@
       </div>
       <div class="main__router">
         <div class="router">
-          <router-view @setUser="setUserInfo"
-            @showResult="showResult"
-            :userData="userData"
-          ></router-view>
+          <router-view @complateTest="complateTest"></router-view>
         </div>
       </div>
     </div>
@@ -92,28 +89,30 @@ export default {
         admin: false,
         wrong: false
       },
-      userData: {
-        info: {
-          name: '',
-          group: ''
-        },
-        result: {
-
-        }
-      },
-      formData: {
+      loginData: {
         login: 'Artyr',
         password: 'pass'
-      },
-      userData: {}
+      }
     }
   },
 
   methods: {
-    showResult(resultData) {
-      if (!resultData) return;
-      this.setUserResult(resultData);
-      this.popupShow('result');
+    complateTest() {
+      const storeData = this.$store.getters.getStoreData;
+      this.sendResultServer(storeData);
+    },
+    sendResultServer(storeData) {
+      this.axios.post('http://localhost:3000/database/results', {
+        userData: storeData.userData,
+        questData: storeData.questData
+      })
+      .then((response) => {
+        this.resultData = response.data;
+        this.popupShow('result');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
     popupShow(popup) {
       this.popups[popup] = true;
@@ -126,8 +125,8 @@ export default {
     },
     verifyLogin(user) {
       this.axios.post('http://localhost:3000/database/auth', {
-        login: this.formData.login,
-        password: this.formData.password
+        login: this.loginData.login,
+        password: this.loginData.password
       })
       .then( (response) => {
         if (response.data === true) {
@@ -141,18 +140,9 @@ export default {
         console.log(error);
       });
     },
-    setUserInfo(info) {
-      if(!info) return;
-      this.userData.name = info.name;
-      this.userData.group = info.group;
-    },
-    setUserResult(results) {
-      if(!results) return;
-      this.userData = results;
-    },
     changeComp(comp) {
       this.popupHide(comp);
-      this.$router.push({name: comp, params: {access: true}});
+      this.$router.push( {name: comp} );
     }
   }
 }
@@ -160,10 +150,10 @@ export default {
 
 <style lang="scss">
   @import "~normalize.css";
-  @import "../style/sass/main.scss";
+  @import "./style/sass/main.scss";
   body {
     min-width: 980px;
-    background: $blue url("../style/img/blue.jpg") top center no-repeat fixed;
+    background: $blue url("./style/img/blue.jpg") top center no-repeat fixed;
     background-size: cover;
     font-family: "Verdana", "Arial", sans-serif;
     user-select: none;

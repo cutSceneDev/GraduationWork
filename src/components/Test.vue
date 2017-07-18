@@ -57,7 +57,7 @@
       <div class="task__finish">
         <button @click="finishTest()"
           class="finish__text"
-          :class="{'disabled': testInProcess}"
+          :class="{'disabled': !testComplate}"
         >Закончить Тест</button>
         <button @click="dev_complate()">complate</button>
         <button @click="dev_logQuestData()">log</button>
@@ -80,7 +80,6 @@ export default {
     return {
       activeTest: 0,
       dataReady: false,
-      testInProgress: false,
       questData: {
         tests: [],
         results: []
@@ -103,45 +102,32 @@ export default {
 
     getTestFromDb(quantity) {
       this.axios.get(`http://localhost:3000/database/tests?qua=${quantity}`)
-        .then((response) => {
-          if (!response) throw new Error();
-          else {
-            this.questData.tests = response.data;
-            this.dataReady = true;
-            for (let el in response.data) {
-              this.questData.results.push(0);
-            }
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .then((response) => {
+        this.questData.tests = response.data;
+        this.dataReady = true;
+        for (let el in response.data) {
+          this.questData.results.push(0);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
     changeQuestion(number) {
       if (number > this.questData.tests.length - 1 || number < 0) return;
       this.activeTest = number;
-      this.questData.tests[number].color = 'blue';
     },
     finishTest() {
-      console.log(this.testInProcess);
-      if (this.testInProcess) return;
-      this.axios.post('http://localhost:3000/database/results', {
-        userData: this.userData,
+      if (!this.testComplate) return;
+      this.saveStoreData();
+      this.$emit('complateTest');
+    },
+    saveStoreData() {
+      this.$store.commit('saveStoreData', {
         questData: this.questData
       })
-        .then((response) => {
-          if (!response) throw new Error();
-          else this.showResult(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    showResult(info) {
-      this.$emit('showResult', info);
     }
   },
-
   computed: {
     activeTotal() {
       return this.activeTest + 1 + '/' + this.questData.tests.length;
@@ -149,16 +135,19 @@ export default {
     currentTest() {
       return this.questData.tests[this.activeTest];
     },
-    testInProcess() {
+    testComplate() {
       for (let result of this.questData.results) {
-        if (result == 0) return true;
+        if (result == 0) return false;
       }
-      return false;
+      return true;
     }
   },
-
-  mounted() {
+  created() {
     this.getTestFromDb(20);
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.testComplate) next();
+    else next(false);
   }
 }
 </script>
@@ -197,6 +186,7 @@ export default {
     flex-flow: row nowrap;
     justify-content: center;
     padding: 5px 10px;
+    margin-bottom: 15px;
     color: $black;
   }
   .status__item {
@@ -261,6 +251,7 @@ export default {
   }
   .label__span {
     @include testElem;
+    font-size: 14px;
   }
   .label__radio:checked + .label__span {
     background-color: $yellow;
