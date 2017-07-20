@@ -55,7 +55,7 @@ export default {
     },
     saveStoreData() {
       this.$store.commit('saveStoreData', {
-        userData: this.userData
+        userData: this.userData //{name, group}
       });
     }
   }

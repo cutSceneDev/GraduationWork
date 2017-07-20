@@ -104,7 +104,7 @@ export default {
     sendResultServer(storeData) {
       this.axios.post('http://localhost:3000/database/results', {
         userData: storeData.userData,
-        questData: storeData.questData
+        resultData: storeData.resultData
       })
       .then((response) => {
         this.resultData = response.data;

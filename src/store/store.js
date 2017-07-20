@@ -6,12 +6,8 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     data: {
-      userData: {
-
-      },
-      questData: {
-
-      }
+      userData: {}, //{name, group}
+      resultData: [] //[{result, id}, {...}]
     }
   },
   getters: {
@@ -24,8 +20,8 @@ export const store = new Vuex.Store({
       if (data.userData) {
         state.data.userData = data.userData;
       }
-      if (data.questData) {
-        state.data.questData = data.questData;
+      if (data.resultData) {
+        state.data.resultData = data.resultData;
       }
     }
   }

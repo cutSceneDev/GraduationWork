@@ -103,7 +103,7 @@ export default {
     getTestFromDb(quantity) {
       this.axios.get(`http://localhost:3000/database/tests?qua=${quantity}`)
       .then((response) => {
-        this.questData.tests = response.data;
+        this.questData.tests = response.data; //[{test}, {...}]
         this.dataReady = true;
         for (let el in response.data) {
           this.questData.results.push(0);
@@ -119,13 +119,23 @@ export default {
     },
     finishTest() {
       if (!this.testComplate) return;
-      this.saveStoreData();
+      this.saveStoreData(this.createResult());
       this.$emit('complateTest');
     },
-    saveStoreData() {
+    saveStoreData(result) {
       this.$store.commit('saveStoreData', {
-        questData: this.questData
+        resultData: result //[{result, id}, {...}]
       })
+    },
+    createResult() {
+      const resultData = [];
+      for (let index in this.questData.results) {
+        resultData.push({
+          id: this.questData.tests[index].id_question,
+          result: this.questData.results[index]
+        });
+      }
+      return resultData;
     }
   },
   computed: {
