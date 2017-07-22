@@ -10,19 +10,25 @@ export const store = new Vuex.Store({
       resultData: [] //[{result, id}, {...}]
     }
   },
-  getters: {
+  getters: {  //getters
     getStoreData(state) {
       return state.data;
     }
   },
-  mutations: {
-    saveStoreData(state, data) {
-      if (data.userData) {
-        state.data.userData = data.userData;
-      }
-      if (data.resultData) {
-        state.data.resultData = data.resultData;
-      }
+  mutations: {   //commit
+    storeSaveUser(state, payload) {
+      state.data.userData = payload;
+    },
+    storeSaveResult(state, payload) {
+      state.data.resultData = payload;
+    }
+  },
+  actions: {  //dispatch
+    storeSaveUser({commit}, {userData}) {
+      commit('storeSaveUser', userData);
+    },
+    storeSaveResult({commit}, {resultData}) {
+      commit('storeSaveResult', resultData);
     }
   }
 });

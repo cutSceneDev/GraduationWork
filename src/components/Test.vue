@@ -119,11 +119,11 @@ export default {
     },
     finishTest() {
       if (!this.testComplate) return;
-      this.saveStoreData(this.createResult());
+      this.storeSaveResult(this.createResult());
       this.$emit('complateTest');
     },
-    saveStoreData(result) {
-      this.$store.commit('saveStoreData', {
+    storeSaveResult(result) {
+      this.$store.dispatch('storeSaveResult', {
         resultData: result //[{result, id}, {...}]
       })
     },

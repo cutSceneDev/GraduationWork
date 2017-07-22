@@ -1,6 +1,6 @@
 <template>
-  <div class="login">
-    <div class="login__content">
+  <div class="reg">
+    <div class="">
       <div class="content__reg">
         <label class="reg__text-group form-label" for="group" >Выберите свою группу:</label>
         <select class="reg__group form-input" id="group" v-model="userData.group">
@@ -35,7 +35,7 @@ export default {
   methods: {
     regUser() {
       if ( this.checkName(this.userData.name) ) {
-        this.saveStoreData();
+        this.storeSaveUser();
         this.$router.push( {name: 'test'} );
       } else {
         this.userData.name = 'Wrong name, try again!'
@@ -53,8 +53,8 @@ export default {
         }
       return name.toLowerCase();
     },
-    saveStoreData() {
-      this.$store.commit('saveStoreData', {
+    storeSaveUser() {
+      this.$store.dispatch('storeSaveUser', {
         userData: this.userData //{name, group}
       });
     }

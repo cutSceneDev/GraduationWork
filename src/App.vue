@@ -39,7 +39,7 @@
           </p>
           <div class="result__buttons">
             <button class="list__key"
-              @click="changeComp('main')"
+              @click="changeComp('info')"
             >Главная</button>
             <button class="list__key"
               @click="changeComp('result')"
@@ -119,7 +119,7 @@ export default {
     },
     popupHide(comp) {
       this.popups.admin = this.popups.about = false;
-      if (comp === 'result' || comp === 'main') {
+      if (comp === 'result' || comp === 'info') {
         this.popups.result = false;
       }
     },

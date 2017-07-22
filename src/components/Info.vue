@@ -1,6 +1,6 @@
 <template>
-    <div class="intro">
-      <div class="intro__content">
+    <div class="info">
+      <div class="info__content">
         <div class="content__left">
           <h2 class="left__title">Информация</h2>
           <p class="left__text bar-content">Данный сайт создан в образовательных целях для тестирования знаний учащихся в НМетАУ. Любой пользователь сайта имеет возможность ввести информацию о себе, после чего пройти определенное количество вопросов для оценивания знаний. По окончанию теста вы сможете увидеть количество правильных ответов и рекомендованную автоматически рассчитанную оценку на основе предложенной системы оценивания.</p>
@@ -54,7 +54,7 @@
           </table>
         </div>
       </div>
-      <router-link class="intro__login" :to="{name: 'login'}" tag="button">Регистрация</router-link>
+      <router-link class="info__reg" :to="{name: 'reg'}" tag="button">Регистрация</router-link>
     </div>
 </template>
 
@@ -74,7 +74,7 @@ export default {
 <style lang="scss" scoped>
   @import "../style/sass/main.scss";
 
-  .intro__content {
+  .info__content {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -113,7 +113,7 @@ export default {
   .table__title {
     text-decoration: underline;
   }
-  .intro__login {
+  .info__reg {
     @include mainButton;
   }
 </style>
