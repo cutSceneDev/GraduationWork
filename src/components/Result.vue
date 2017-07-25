@@ -35,12 +35,11 @@ export default {
 
   methods: {
     getStat() {
-      let that = this;
       this.axios.get('http://localhost:3000/database/stat')
-      .then(function (response) {
-        that.results = response.data.reverse();
-        if (that.results.length > 50) {
-          that.results = that.results.slice(0, 50);
+      .then((response) => {
+        this.results = response.data.reverse();
+        if (this.results.length > 50) {
+          this.results = this.results.slice(0, 50);
         }
       })
       .catch(function (error) {

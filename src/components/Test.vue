@@ -1,10 +1,10 @@
 <template>
   <div class="test">
-    <div class="test__content" v-if="this.dataReady">
+    <div class="test__content" v-if="questData.tests.length > 0">
       <div class="content__status">
         <div v-for="(item, index) in questData.results"
           class="status__item"
-          :class="index === activeTest ?
+          :class="index === currentTest ?
             'yellow' : item ?
             'blue' : 'white'"
           @click="changeQuestion(index)"
@@ -15,42 +15,42 @@
           <span class="number__current">{{activeTotal}}</span>
         </div>
         <div class="task__quest">
-          <span class="quest__text">{{currentTest.question}}</span>
+          <span class="quest__text">{{storeTestCurrent.question}}</span>
         </div>
         <div class="task__answer">
           <label style="display:none">
             <input name="answer" type="radio" value="0"
-              v-model="questData.results[activeTest]">
+              v-model="questData.results[currentTest]">
             <span class="label__span">--Не выбран--</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="1"
-              v-model="questData.results[activeTest]">
-            <span class="label__span">{{currentTest.answer1}}</span>
+              v-model="questData.results[currentTest]">
+            <span class="label__span">{{storeTestCurrent.answer1}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="2"
-              v-model="questData.results[activeTest]">
-            <span class="label__span">{{currentTest.answer2}}</span>
+              v-model="questData.results[currentTest]">
+            <span class="label__span">{{storeTestCurrent.answer2}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="3"
-              v-model="questData.results[activeTest]">
-            <span class="label__span">{{currentTest.answer3}}</span>
+              v-model="questData.results[currentTest]">
+            <span class="label__span">{{storeTestCurrent.answer3}}</span>
           </label>
           <label class="answer__label">
             <input class="label__radio" name="answer" type="radio" value="4"
-              v-model="questData.results[activeTest]">
-            <span class="label__span">{{currentTest.answer4}}</span>
+              v-model="questData.results[currentTest]">
+            <span class="label__span">{{storeTestCurrent.answer4}}</span>
           </label>
 
         </div>
         <div class="task__move">
           <button class="move__back"
-            @click="changeQuestion(activeTest - 1)"
+            @click="changeQuestion(currentTest - 1)"
           >Предыдущий вопрос</button>
           <button class="move__forward"
-            @click="changeQuestion(activeTest + 1)"
+            @click="changeQuestion(currentTest + 1)"
           >Следующий вопрос</button>
         </div>
       </div>
@@ -59,8 +59,6 @@
           class="finish__text"
           :class="{'disabled': !testComplate}"
         >Закончить Тест</button>
-        <button @click="dev_complate()">complate</button>
-        <button @click="dev_logQuestData()">log</button>
       </div>
     </div>
     <div class="test__await" v-if="!this.dataReady">
@@ -68,6 +66,10 @@
         <p>Testing is loading...</p>
       </div>
     </div>
+    <button @click="dev_complate()">complate</button>
+    <button @click="dev_logQuestData()">log</button>
+    <button @click="dev_logStore()">logStore</button>
+    <button @click="dev_changeTest()">changetest</button>
     <div>
       <router-view></router-view>
     </div>
@@ -78,16 +80,8 @@
 export default {
   data: function() {
     return {
-      activeTest: 0,
-      dataReady: false,
-      questData: {
-        tests: [],
-        results: []
-      },
-      userData: {
-          name: this.$route.query.name,
-          group: this.$route.query.group
-      }
+      currentTest: 0,
+      results: []
     }
   },
   methods: {
@@ -97,25 +91,18 @@ export default {
       }
     },
     dev_logQuestData() {
-      console.log('questData', this.questData, 'userData', this.userData);
+      console.log('questData', this.questData);
+    },
+    dev_logStore() {
+      console.log(this.$store.getters.getStoreTests);
+    },
+    dev_changeTest() {
+      this.questData.tests[0].answer = 'looool';
     },
 
-    getTestFromDb(quantity) {
-      this.axios.get(`http://localhost:3000/database/tests?qua=${quantity}`)
-      .then((response) => {
-        this.questData.tests = response.data; //[{test}, {...}]
-        this.dataReady = true;
-        for (let el in response.data) {
-          this.questData.results.push(0);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    },
     changeQuestion(number) {
       if (number > this.questData.tests.length - 1 || number < 0) return;
-      this.activeTest = number;
+      this.currentTest = number;
     },
     finishTest() {
       if (!this.testComplate) return;
@@ -140,20 +127,23 @@ export default {
   },
   computed: {
     activeTotal() {
-      return this.activeTest + 1 + '/' + this.questData.tests.length;
-    },
-    currentTest() {
-      return this.questData.tests[this.activeTest];
+      return this.currentTest + 1 + '/' + this.storeTestLength;
     },
     testComplate() {
       for (let result of this.questData.results) {
         if (result == 0) return false;
       }
       return true;
+    },
+    storeTestCurrent() {
+      return this.$store.getters.getStoreTests[this.currentTest];
+    },
+    storeTestLength() {
+      return this.$store.getters.getStoreTests.length;
     }
   },
   created() {
-    this.getTestFromDb(20);
+    this.$store.dispatch('storeGetTest');
   },
   beforeRouteLeave(to, from, next) {
     if (this.testComplate) next();

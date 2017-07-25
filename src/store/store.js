@@ -1,34 +1,58 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-
+import axios from 'axios';
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    data: {
-      userData: {}, //{name, group}
-      resultData: [] //[{result, id}, {...}]
+    testing: {
+      user: {
+        name: '',
+        group: ''
+      },
+      questions: [], //[{}]
+      result: [] //[{result, id}, {...}]
     }
   },
   getters: {  //getters
     getStoreData(state) {
-      return state.data;
+      return state.testing;
+    },
+    getStoreTests(state) {
+      return state.testing.questions
     }
   },
   mutations: {   //commit
     storeSaveUser(state, payload) {
-      state.data.userData = payload;
+      state.testing.user = payload;
     },
     storeSaveResult(state, payload) {
-      state.data.resultData = payload;
+      state.testing.result = payload;
+    },
+    storeSaveTest(state, payload) {
+      payload.forEach((test) => {
+        state.testing.questions.push(test);
+      })
     }
   },
   actions: {  //dispatch
-    storeSaveUser({commit}, {userData}) {
-      commit('storeSaveUser', userData);
+    storeSaveUser({commit}, {user}) {
+      commit('storeSaveUser', user);
     },
-    storeSaveResult({commit}, {resultData}) {
-      commit('storeSaveResult', resultData);
+    storeSaveResult({commit}, {result}) {
+      commit('storeSaveResult', result);
+    },
+    storeGetTest({commit}) {
+      axios.get(`http://localhost:3000/database/tests?qua=20`)
+      .then((response) => {
+        commit('storeSaveTest', response.data);
+      })
+      .catch((error) => {
+        throw error;
+      })
+    },
+    storeClearTest() {
+
     }
   }
 });
