@@ -16,9 +16,6 @@
       </div>
       <button class="login__test" @click="regUser">Начать тестирование</button>
     </div>
-    <div>
-      <router-view></router-view>
-    </div>
   </div>
 </template>
 

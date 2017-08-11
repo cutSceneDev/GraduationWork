@@ -68,9 +68,6 @@
         <p>Testing is loading...</p>
       </div>
     </div>
-    <div>
-      <router-view></router-view>
-    </div>
   </div>
 </template>
 

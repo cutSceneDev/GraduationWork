@@ -14,6 +14,6 @@ export const routes = [
 ];
 
 function beforeTest(to, from, next) {
-  if (from.name == 'reg') next();
+  if (from.name === 'reg') next();
   else next({name: 'info'});
 }
