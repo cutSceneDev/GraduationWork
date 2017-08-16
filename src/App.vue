@@ -4,7 +4,9 @@
         <div class="nav__container">
           <h1 class="container__title">Student Tester</h1>
           <div class="container__list">
-            <button class="list__key list__key--active" @click.prevent="popupShow('about')">О проекте</button>
+            <button class="list__key list__key--active"
+              @click.prevent="popupShow('about')"
+              >О проекте</button>
             <router-link class="list__key" to='/'>Главная</router-link>
             <router-link class="list__key" to='/result'>Результаты</router-link>
             <button class="list__key list__key--active"
@@ -67,7 +69,7 @@
           <p class="admin__wrong" v-if="popups.wrong">Wrong login or password, try again!</p>
           <button class="admin__button"
             @click="verifyLogin('admin')"
-          >Войти</button>
+            >Войти</button>
         </div>
       </div>
       </div>
@@ -144,6 +146,11 @@ export default {
       this.popupHide(comp);
       this.$router.push( {name: comp} );
     }
+  },
+
+  mounted() {
+    this.$store.dispatch('loadTests');
+    console.log(this.$store.getters.getTests);
   }
 }
 </script>
