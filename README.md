@@ -9,8 +9,4 @@ front SPA with Vue.js
        => npm install
 4. start server:
        => npm run dev
-<<<<<<< HEAD
 5. if you have error with "binding environment" when start project on 64x platform, command "npm rebuild node-sass" may help you.
-=======
-
->>>>>>> 1d7af2f5a613b5248f68dce78602da965eaa837a
